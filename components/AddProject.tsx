@@ -232,19 +232,42 @@ const AddProject: React.FC<AddProjectProps> = ({ onBack, onSubmit }) => {
            </div>
 
            <div className="space-y-4">
-              <div className="bg-[#EAD8B1]/40 p-8 rounded-[2rem] border-2 border-gray-900/5 flex flex-col items-center gap-4 shadow-inner">
-                 <h4 className="font-bold text-gray-800 italic text-center">.. is the project completed to its fullest?</h4>
-                 <div className="flex gap-4">
-                    <button 
-                      onClick={() => setStatus('Finished Project')}
-                      className={`w-16 h-16 rounded-full font-black text-xl flex items-center justify-center transition-all ${status === 'Finished Project' ? 'bg-green-600 text-white shadow-xl scale-110' : 'bg-white border-2 border-gray-200 text-gray-300'}`}
-                    >Y</button>
-                    <button 
-                      onClick={() => setStatus('Developing Project')}
-                      className={`w-16 h-16 rounded-full font-black text-xl flex items-center justify-center transition-all ${status === 'Developing Project' ? 'bg-red-600 text-white shadow-xl scale-110' : 'bg-white border-2 border-gray-200 text-gray-300'}`}
-                    >N</button>
-                 </div>
-              </div>
+               <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center gap-6">
+                  <div className="flex flex-col items-center gap-1">
+                     <h4 className="font-black text-[10px] uppercase tracking-[0.2em] text-gray-400">Project Configuration</h4>
+                     <p className="font-bold text-gray-900 text-sm">Change Project Status</p>
+                  </div>
+                  
+                  <div className="relative bg-gray-200/50 p-1 rounded-2xl flex w-full max-w-[320px] self-center">
+                     {/* Animated Background Indicator */}
+                     <div 
+                       className={`absolute top-1 bottom-1 w-[calc(50%-0.25rem)] bg-white rounded-xl shadow-md transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) ${
+                         status === 'Finished Project' 
+                           ? 'translate-x-[calc(100%+0.25rem)]' 
+                           : 'translate-x-0'
+                       }`} 
+                     />
+                     
+                     <button 
+                       type="button"
+                       onClick={() => setStatus('Developing Project')}
+                       className={`relative z-10 flex-1 py-3 text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
+                         status === 'Developing Project' ? 'text-[#8B3A2B]' : 'text-gray-400 hover:text-gray-600'
+                       }`}
+                     >
+                       Developing
+                     </button>
+                     <button 
+                       type="button"
+                       onClick={() => setStatus('Finished Project')}
+                       className={`relative z-10 flex-1 py-3 text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
+                         status === 'Finished Project' ? 'text-green-600' : 'text-gray-400 hover:text-gray-600'
+                       }`}
+                     >
+                       Finished
+                     </button>
+                  </div>
+               </div>
 
               <button 
                 onClick={handleFinalSubmit}
