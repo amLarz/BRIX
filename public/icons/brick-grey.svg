@@ -1,0 +1,15 @@
+<svg width="64" height="64" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Modern Grey Concrete Block - Pixel Art Style -->
+  <!-- Main Body -->
+  <rect x="2" y="4" width="12" height="8" fill="#8D99AE"/>
+  <!-- Highlights -->
+  <rect x="2" y="4" width="12" height="1" fill="#EDF2F4"/>
+  <rect x="2" y="4" width="1" height="8" fill="#EDF2F4"/>
+  <!-- Shadows -->
+  <rect x="2" y="11" width="12" height="1" fill="#2B2D42"/>
+  <rect x="13" y="4" width="1" height="8" fill="#2B2D42"/>
+  
+  <!-- Holes/Indents (Iconic for concrete blocks) -->
+  <rect x="4" y="6" width="3" height="4" fill="#2B2D42" fill-opacity="0.4"/>
+  <rect x="9" y="6" width="3" height="4" fill="#2B2D42" fill-opacity="0.4"/>
+</svg>

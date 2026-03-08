@@ -10,6 +10,7 @@ interface HomeProps {
   onProjectClick: (id: string) => void;
   onCategoryClick: (id: string) => void;
   onVote: (projectId: string, type: 'up' | 'down') => void;
+  userVotes: Record<string, 'up' | 'down' | null>;
   sortOrder: 'recent' | 'trending';
   onSortChange: (order: 'recent' | 'trending') => void;
 }
@@ -20,6 +21,7 @@ const Home: React.FC<HomeProps> = ({
   onProjectClick, 
   onCategoryClick, 
   onVote,
+  userVotes,
   sortOrder,
   onSortChange 
 }) => {
@@ -64,6 +66,7 @@ const Home: React.FC<HomeProps> = ({
               project={project} 
               onClick={() => onProjectClick(project.id)} 
               onVote={(type) => onVote(project.id, type)}
+              currentUserVote={userVotes[project.id] || null}
             />
           ))}
           {projects.length === 0 && (

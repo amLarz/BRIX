@@ -8,6 +8,7 @@ interface ProjectDetailProps {
   project: Project;
   onBack: () => void;
   onVote: (type: 'up' | 'down') => void;
+  currentUserVote: 'up' | 'down' | null;
   onUpdateStatus: (status: ProjectStatus) => void;
   onAddComment: (text: string, image?: string) => void;
   onMaterialClick: (materialName: string) => void;
@@ -18,6 +19,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
   project, 
   onBack, 
   onVote, 
+  currentUserVote,
   onUpdateStatus, 
   onAddComment,
   onMaterialClick,
@@ -160,12 +162,20 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
               <TugOfWar upvotes={project.upvotes} downvotes={project.downvotes} />
               <div className="flex justify-center gap-4 mt-6">
                  <button onClick={() => onVote('down')} className="flex flex-col items-center group">
-                    <div className="w-14 h-14 rounded-2xl bg-red-50 flex items-center justify-center text-red-600 font-black text-xl group-hover:bg-red-500 group-hover:text-white transition-all shadow-sm">▼</div>
-                    <span className="text-[10px] font-black mt-1 text-red-600 uppercase">Concerned</span>
+                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl transition-all shadow-sm ${
+                      currentUserVote === 'down' 
+                        ? 'bg-red-500 text-white shadow-lg shadow-red-200' 
+                        : 'bg-red-50 text-red-600 group-hover:bg-red-500 group-hover:text-white'
+                    }`}>▼</div>
+                    <span className={`text-[10px] font-black mt-1 uppercase ${currentUserVote === 'down' ? 'text-red-500' : 'text-red-600'}`}>Concerned</span>
                  </button>
                  <button onClick={() => onVote('up')} className="flex flex-col items-center group">
-                    <div className="w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center text-green-600 font-black text-xl group-hover:bg-green-500 group-hover:text-white transition-all shadow-sm">▲</div>
-                    <span className="text-[10px] font-black mt-1 text-green-600 uppercase">Supporter</span>
+                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl transition-all shadow-sm ${
+                      currentUserVote === 'up' 
+                        ? 'bg-green-500 text-white shadow-lg shadow-green-200' 
+                        : 'bg-green-50 text-green-600 group-hover:bg-green-500 group-hover:text-white'
+                    }`}>▲</div>
+                    <span className={`text-[10px] font-black mt-1 uppercase ${currentUserVote === 'up' ? 'text-green-500' : 'text-green-600'}`}>Supporter</span>
                  </button>
               </div>
            </div>

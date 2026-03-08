@@ -1,0 +1,11 @@
+<svg width="64" height="64" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Stylized Abstract Brick Symbol - Pixel Art Style -->
+  <!-- Outline/Shape -->
+  <path d="M4 4H12V12H4V4Z" fill="#D4A373"/>
+  <!-- Top Section -->
+  <rect x="5" y="5" width="6" height="2" fill="#FAEDCD"/>
+  <!-- Bottom Section -->
+  <rect x="5" y="9" width="6" height="2" fill="#BC6C25"/>
+  <!-- Accent -->
+  <rect x="7" y="7" width="2" height="2" fill="#606C38"/>
+</svg>

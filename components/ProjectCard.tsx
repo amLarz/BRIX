@@ -6,9 +6,10 @@ interface ProjectCardProps {
   project: Project;
   onClick: () => void;
   onVote: (type: 'up' | 'down') => void;
+  currentUserVote: 'up' | 'down' | null;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, onVote }) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, onVote, currentUserVote }) => {
   return (
     <div className="bg-white rounded-3xl shadow-[0_10px_30px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col group border border-gray-100 hover:border-[#8B3A2B]/20 transition-all duration-300">
       <div className="relative h-56 overflow-hidden cursor-pointer" onClick={onClick}>
@@ -55,15 +56,23 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, onVote }) =
                 onClick={(e) => { e.stopPropagation(); onVote('up'); }}
                 className="flex items-center gap-1.5 group/btn"
             >
-              <span className="w-8 h-8 rounded-xl bg-green-50 flex items-center justify-center text-green-600 font-bold group-hover/btn:bg-green-500 group-hover/btn:text-white transition-all">▲</span>
-              <span className="text-sm font-black text-gray-700">{project.upvotes}</span>
+              <span className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold transition-all ${
+                currentUserVote === 'up' 
+                  ? 'bg-green-500 text-white shadow-lg shadow-green-200' 
+                  : 'bg-green-50 text-green-600 group-hover/btn:bg-green-500 group-hover/btn:text-white'
+              }`}>▲</span>
+              <span className={`text-sm font-black ${currentUserVote === 'up' ? 'text-green-600' : 'text-gray-700'}`}>{project.upvotes}</span>
             </button>
             <button 
                 onClick={(e) => { e.stopPropagation(); onVote('down'); }}
                 className="flex items-center gap-1.5 group/btn"
             >
-              <span className="w-8 h-8 rounded-xl bg-red-50 flex items-center justify-center text-red-600 font-bold group-hover/btn:bg-red-500 group-hover/btn:text-white transition-all">▼</span>
-              <span className="text-sm font-black text-gray-700">{project.downvotes}</span>
+              <span className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold transition-all ${
+                currentUserVote === 'down' 
+                  ? 'bg-red-500 text-white shadow-lg shadow-red-200' 
+                  : 'bg-red-50 text-red-600 group-hover/btn:bg-red-500 group-hover/btn:text-white'
+              }`}>▼</span>
+              <span className={`text-sm font-black ${currentUserVote === 'down' ? 'text-red-600' : 'text-gray-700'}`}>{project.downvotes}</span>
             </button>
           </div>
           <button 
