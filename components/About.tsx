@@ -18,7 +18,7 @@ const About: React.FC<AboutProps> = ({ onBack }) => {
             </button>
             <div>
               <h2 className="text-4xl lg:text-5xl font-black italic uppercase tracking-tighter text-gray-900 leading-none">Platform Blueprint</h2>
-              <p className="text-[10px] font-bold text-[#8B3A2B] uppercase tracking-[0.2em] mt-2">Building Reporting & Infrastructure Exchange</p>
+              <p className="text-[10px] font-bold text-[#8B3A2B] uppercase tracking-[0.2em] mt-2">BUILDING REPORTS & INFRASTRUCTURE EXCHANGE</p>
             </div>
          </div>
          <div className="text-right">

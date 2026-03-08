@@ -33,7 +33,7 @@ const Header: React.FC<HeaderProps> = ({
               <div className="h-12 w-0.5 bg-white/20 hidden lg:block" />
               <div className="max-w-md">
                 <h2 className="text-xs lg:text-sm font-black uppercase tracking-[0.15em] leading-tight text-white opacity-90">
-                  Building Reporting & Infrastructure Exchange
+                  BUILDING REPORTS & INFRASTRUCTURE EXCHANGE
                 </h2>
               </div>
             </div>

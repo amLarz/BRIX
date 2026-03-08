@@ -6,18 +6,21 @@ export interface ModerationResult {
 const BLOCKED_WORDS = [
   // Profanity/Inappropriate
   'tanga', 'bobo', 'gago', 'puta', 'putangina', 'gaga', 'ulol', 'leche', 'peste', 'shit', 'fuck', 'bitch', 'asshole', 'dick', 'pussy',
+  'walang hiya', 'hayop', 'lintik', 'tarantado', 'tae', 'punyeta', 'pakshet', 'bwisit',
 
   // Political/Redtagging/Slurs
-  'npa', 'terrorist', 'terorista', 'komunista', 'rebelde', 'redtag', 'red-tag', 'dilawan', 'pinklawan', 'dds', 'apologist', 'marcos', 'aquino', 'lenlen', 'bbm', 'lugaw', 'magnanakaw', 'dictator', 'diktador'
+  'npa', 'terrorist', 'terorista', 'komunista', 'rebelde', 'redtag', 'red-tag', 'dilawan', 'pinklawan', 'dds', 'apologist', 'marcos', 'aquino', 'lenlen', 'bbm', 'lugaw', 'magnanakaw', 'dictator', 'diktador',
+  'terror-tag', 'teror-tag', 'terrorist-tag', 'kakistocracy', 'demagogue', 'troll', 'bayaran', 'bulag', 'panatiko'
 ];
 
 export const moderateComment = (text: string): ModerationResult => {
   const lowerText = text.toLowerCase();
   
   for (const word of BLOCKED_WORDS) {
-    // Check for exact word matches using word boundaries to avoid false positives
-    // \b doesn't work well with hyphens in JS regex sometimes, but fine for mostly alphanumeric words
-    const regex = new RegExp(`\\b${word}\\b`, 'i');
+    // Escape special characters in the word for regex
+    const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    // Using a boundary at the start, but allowing suffixes to catch "red-tagging", "red-tagged", etc.
+    const regex = new RegExp(`(^|[^a-zA-Z0-9])${escapedWord}`, 'i');
     if (regex.test(lowerText)) {
       return {
         isAllowed: false,
