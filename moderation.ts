@@ -19,8 +19,8 @@ export const moderateComment = (text: string): ModerationResult => {
   for (const word of BLOCKED_WORDS) {
     // Escape special characters in the word for regex
     const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    // Using a boundary at the start, but allowing suffixes to catch "red-tagging", "red-tagged", etc.
-    const regex = new RegExp(`(^|[^a-zA-Z0-9])${escapedWord}`, 'i');
+    // Using word boundaries to avoid false positives like 'npa' in 'unpaid' or 'tanga' in 'tangal'
+    const regex = new RegExp(`(^|[^a-zA-Z0-9])${escapedWord}($|[^a-zA-Z0-9])`, 'i');
     if (regex.test(lowerText)) {
       return {
         isAllowed: false,

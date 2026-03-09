@@ -1,6 +1,7 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Project, ProjectStatus, MaterialItem } from '../types';
+import { moderateComment } from '../moderation';
 
 interface AddProjectProps {
   onBack: () => void;
@@ -27,10 +28,21 @@ const AddProject: React.FC<AddProjectProps> = ({ onBack, onSubmit }) => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (image && image.startsWith('blob:')) {
+        URL.revokeObjectURL(image);
+      }
       const url = URL.createObjectURL(file);
       setImage(url);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (image && image.startsWith('blob:')) {
+        URL.revokeObjectURL(image);
+      }
+    };
+  }, [image]);
 
   const handleDocChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -55,6 +67,22 @@ const AddProject: React.FC<AddProjectProps> = ({ onBack, onSubmit }) => {
       alert("Please fill in all required fields: Title, Location, Budget, Deadline, and Verification Document.");
       return;
     }
+
+    // Moderation Checks
+    const nameModeration = moderateComment(name);
+    if (!nameModeration.isAllowed) {
+      alert(`Title check failed: ${nameModeration.reason}`);
+      return;
+    }
+
+    if (description) {
+      const descModeration = moderateComment(description);
+      if (!descModeration.isAllowed) {
+        alert(`Description check failed: ${descModeration.reason}`);
+        return;
+      }
+    }
+
     onSubmit({
       name,
       location,

@@ -8,7 +8,6 @@ import ProjectDetail from './components/ProjectDetail';
 import MaterialPriceList from './components/MaterialPriceList';
 import AddProject from './components/AddProject';
 import About from './components/About';
-import CommunityChat from './components/CommunityChat';
 
 const App: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
@@ -16,7 +15,6 @@ const App: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<'recent' | 'trending'>('trending');
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(false);
   const [userVotes, setUserVotes] = useState<Record<string, 'up' | 'down' | null>>(() => {
     const saved = localStorage.getItem('brix_user_votes');
     return saved ? JSON.parse(saved) : {};
@@ -103,7 +101,7 @@ const App: React.FC = () => {
     setProjects(prev => prev.map(p => {
       if (p.id !== projectId) return p;
       const newComment = {
-        id: Math.random().toString(36).substr(2, 9),
+        id: Math.random().toString(36).slice(2, 9),
         author: 'Guest User',
         role: 'Community Member',
         text,
@@ -122,7 +120,7 @@ const App: React.FC = () => {
   const handleCreateProject = (newProject: Omit<Project, 'id' | 'upvotes' | 'downvotes' | 'comments' | 'createdAt'>) => {
     const project: Project = {
       ...newProject,
-      id: newProject.name.toLowerCase().replace(/\s+/g, '-'),
+      id: `${newProject.name.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
       upvotes: 0,
       downvotes: 0,
       comments: [],
@@ -223,22 +221,6 @@ const App: React.FC = () => {
         </button>
         <span className={`text-[10px] font-black uppercase tracking-widest ${isAdmin ? 'text-[#8B3A2B]' : 'text-gray-400'}`}>Admin</span>
       </div>
-
-      {/* Community Chat Toggle */}
-      <button 
-        onClick={() => setIsChatOpen(!isChatOpen)}
-        className="fixed bottom-6 left-6 z-50 flex items-center gap-2 bg-[#8B3A2B] text-white px-5 py-3 rounded-full shadow-2xl hover:bg-[#7A3326] transition-all hover:scale-105 active:scale-95 group border-2 border-white/20"
-      >
-        <div className="relative">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-          </svg>
-          <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-green-400 border-2 border-[#8B3A2B] rounded-full" />
-        </div>
-        <span className="font-bold text-sm tracking-tight">Community</span>
-      </button>
-
-      <CommunityChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
     </div>
   );
 };

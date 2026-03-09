@@ -50,10 +50,22 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (previewImage && previewImage.startsWith('blob:')) {
+        URL.revokeObjectURL(previewImage);
+      }
       const url = URL.createObjectURL(file);
       setPreviewImage(url);
     }
   };
+
+  // Revoke object URL on unmount
+  React.useEffect(() => {
+    return () => {
+      if (previewImage && previewImage.startsWith('blob:')) {
+        URL.revokeObjectURL(previewImage);
+      }
+    };
+  }, [previewImage]);
 
   const handleViewDoc = () => {
     alert(`BRIX Verification: Opening document "${project.verificationDoc}" for review. In a live environment, this would open the verified PDF file.`);
@@ -158,7 +170,14 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
            )}
 
            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
-              <h3 className="text-xs font-black uppercase tracking-widest text-gray-400 mb-4 text-center">Community Sentiment</h3>
+              <div className="text-center mb-4">
+                 <h3 className="text-xs font-black uppercase tracking-widest text-gray-400">COMMUNITY SCORE</h3>
+                 <div className="text-3xl font-black text-[#8B3A2B] mt-1">
+                    {project.upvotes + project.downvotes > 0 
+                      ? `${Math.round((project.upvotes / (project.upvotes + project.downvotes)) * 100)}%` 
+                      : '50%'}
+                 </div>
+              </div>
               <TugOfWar upvotes={project.upvotes} downvotes={project.downvotes} />
               <div className="flex justify-center gap-4 mt-6">
                  <button onClick={() => onVote('down')} className="flex flex-col items-center group">
@@ -167,7 +186,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
                         ? 'bg-red-500 text-white shadow-lg shadow-red-200' 
                         : 'bg-red-50 text-red-600 group-hover:bg-red-500 group-hover:text-white'
                     }`}>▼</div>
-                    <span className={`text-[10px] font-black mt-1 uppercase ${currentUserVote === 'down' ? 'text-red-500' : 'text-red-600'}`}>Concerned</span>
+                    <span className={`text-[10px] font-black mt-1 uppercase ${currentUserVote === 'down' ? 'text-red-500' : 'text-red-600'}`}>Downvote</span>
                  </button>
                  <button onClick={() => onVote('up')} className="flex flex-col items-center group">
                     <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl transition-all shadow-sm ${
@@ -175,7 +194,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
                         ? 'bg-green-500 text-white shadow-lg shadow-green-200' 
                         : 'bg-green-50 text-green-600 group-hover:bg-green-500 group-hover:text-white'
                     }`}>▲</div>
-                    <span className={`text-[10px] font-black mt-1 uppercase ${currentUserVote === 'up' ? 'text-green-500' : 'text-green-600'}`}>Supporter</span>
+                    <span className={`text-[10px] font-black mt-1 uppercase ${currentUserVote === 'up' ? 'text-green-500' : 'text-green-600'}`}>Upvote</span>
                  </button>
               </div>
            </div>
