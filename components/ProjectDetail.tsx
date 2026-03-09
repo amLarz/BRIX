@@ -10,8 +10,10 @@ interface ProjectDetailProps {
   onVote: (type: 'up' | 'down') => void;
   currentUserVote: 'up' | 'down' | null;
   onUpdateStatus: (status: ProjectStatus) => void;
-  onAddComment: (text: string, image?: string) => void;
+  onAddComment: (text: string, image?: string, isInformative?: boolean, isPrivateEvidence?: boolean) => void;
   onAddReply: (commentId: string, text: string) => void;
+  onDeleteComment: (commentId: string) => void;
+  onDeleteReply: (parentCommentId: string, replyId: string) => void;
   onCommentVote: (commentId: string, type: 'up' | 'down', isReply: boolean, parentId?: string) => void;
   commentVotes: Record<string, 'up' | 'down' | null>;
   onMaterialClick: (materialName: string) => void;
@@ -26,6 +28,8 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
   onUpdateStatus, 
   onAddComment,
   onAddReply,
+  onDeleteComment,
+  onDeleteReply,
   onCommentVote,
   commentVotes,
   onMaterialClick,
@@ -36,7 +40,9 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [showAllMaterials, setShowAllMaterials] = useState(false);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [expandedComments, setExpandedComments] = useState<Record<string, boolean>>({});
   const [replyText, setReplyText] = useState('');
+  const [isPrivateEvidence, setIsPrivateEvidence] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmitReply = (e: React.FormEvent, commentId: string) => {
@@ -52,6 +58,8 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
     onAddReply(commentId, replyText);
     setReplyText('');
     setReplyingTo(null);
+    // Auto-expand replies when user posts one
+    setExpandedComments(prev => ({ ...prev, [commentId]: true }));
   };
 
   const handleSubmitComment = (e: React.FormEvent) => {
@@ -64,9 +72,10 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
       return;
     }
 
-    onAddComment(commentText, previewImage || undefined);
+    onAddComment(commentText, previewImage || undefined, moderationResult.isInformative, isPrivateEvidence);
     setCommentText('');
     setPreviewImage(null);
+    setIsPrivateEvidence(false);
     setError(null);
   };
 
@@ -99,6 +108,27 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
   const ReplyIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3">
       <path d="M9 14l-4-4 4-4"/><path d="M5 10h11a4 4 0 1 1 0 8h-1"/>
+    </svg>
+  );
+
+  const TrashIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3">
+      <path d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2M10 11v6M14 11v6" />
+    </svg>
+  );
+  
+  const ChevronIcon = ({ isOpen }: { isOpen: boolean }) => (
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2.5" 
+      strokeLinecap="round" 
+      strokeLinejoin="round" 
+      className={`w-3 h-3 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+    >
+      <polyline points="6 9 12 15 18 9"></polyline>
     </svg>
   );
 
@@ -359,6 +389,22 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
                     </div>
                     <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
                  </div>
+                 
+                 {previewImage && (
+                   <div className="flex items-center gap-2 px-2 animate-in fade-in duration-300">
+                     <label className="flex items-center gap-2 cursor-pointer group">
+                       <input 
+                         type="checkbox" 
+                         checked={isPrivateEvidence}
+                         onChange={(e) => setIsPrivateEvidence(e.target.checked)}
+                         className="w-4 h-4 rounded border-gray-300 text-[#8B3A2B] focus:ring-[#8B3A2B]"
+                       />
+                       <span className="text-xs font-bold text-gray-700 group-hover:text-gray-900">
+                         Keep Evidence Private (AI / Mod Verification Only)
+                       </span>
+                     </label>
+                   </div>
+                 )}
                  <div className="flex items-center justify-end">
                     <div className="flex items-center gap-4">
                        {error && (
@@ -383,6 +429,21 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
                            <div>
                               <span className="font-bold text-gray-900 mr-2 text-sm uppercase tracking-tight">{c.author}</span>
                               <span className="text-[8px] font-black uppercase bg-gray-100 px-2 py-0.5 rounded text-gray-500">{c.role}</span>
+                              {c.isVerified && c.isPrivateEvidence && (
+                                <span className="ml-2 inline-block text-[8px] font-black uppercase bg-purple-100 text-purple-700 px-2 py-0.5 rounded border border-purple-200">
+                                  ✓ System Corroborated
+                                </span>
+                              )}
+                              {c.isVerified && !c.isPrivateEvidence && (
+                                <span className="ml-2 inline-block text-[8px] font-black uppercase bg-green-100 text-green-700 px-2 py-0.5 rounded border border-green-200">
+                                  ✓ Verified Media
+                                </span>
+                              )}
+                              {c.isInformative && !c.isVerified && (
+                                <span className="ml-2 inline-block text-[8px] font-black uppercase bg-blue-100 text-blue-700 px-2 py-0.5 rounded border border-blue-200">
+                                  ℹ Detailed Claim
+                                </span>
+                              )}
                            </div>
                            <span className="text-[10px] text-gray-400 font-mono">{c.date}</span>
                         </div>
@@ -403,6 +464,28 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
                              <ReplyIcon />
                              {replyingTo === c.id ? 'Cancel' : 'Reply'}
                           </button>
+                          {c.replies && c.replies.length > 0 && (
+                            <button 
+                              onClick={() => setExpandedComments(prev => ({ ...prev, [c.id]: !prev[c.id] }))}
+                              className={`flex items-center gap-1 text-[10px] font-black uppercase tracking-widest transition-colors ${expandedComments[c.id] ? 'text-[#8B3A2B]' : 'text-gray-400 hover:text-[#8B3A2B]'}`}
+                            >
+                              <ChevronIcon isOpen={!!expandedComments[c.id]} />
+                              {expandedComments[c.id] ? 'Hide' : `View ${c.replies.length} ${c.replies.length === 1 ? 'Reply' : 'Replies'}`}
+                            </button>
+                          )}
+                          {isAdmin && (
+                            <button 
+                              onClick={() => {
+                                if (window.confirm("Are you sure you want to delete this comment?")) {
+                                  onDeleteComment(c.id);
+                                }
+                              }}
+                              className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-red-400 hover:text-red-600 transition-colors ml-auto"
+                            >
+                               <TrashIcon />
+                               Delete
+                            </button>
+                          )}
                         </div>
 
                         {/* Inline Reply Form */}
@@ -427,8 +510,8 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
                   </div>
 
                   {/* Replies (Reddit Style Nesting) */}
-                  {c.replies && c.replies.length > 0 && (
-                    <div className="ml-8 pl-5 border-l-2 border-gray-100 space-y-3">
+                  {c.replies && c.replies.length > 0 && expandedComments[c.id] && (
+                    <div className="ml-8 pl-5 border-l-2 border-gray-100 space-y-3 animate-in slide-in-from-top-4 duration-500">
                       {c.replies.map(r => (
                         <div key={r.id} className="bg-white/50 p-4 rounded-2xl border border-gray-50 flex gap-3 hover:shadow-sm transition-shadow">
                            <img src={r.avatar} className="w-8 h-8 rounded-full flex-shrink-0" alt="" />
@@ -445,6 +528,19 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
                               {/* Reply Action Bar */}
                               <div className="flex items-center gap-4 pt-1">
                                 <CommentVoteControls id={r.id} upvotes={r.upvotes} downvotes={r.downvotes} isReply={true} parentId={c.id} />
+                                {isAdmin && (
+                                  <button 
+                                    onClick={() => {
+                                      if (window.confirm("Are you sure you want to delete this reply?")) {
+                                        onDeleteReply(c.id, r.id);
+                                      }
+                                    }}
+                                    className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-red-400 hover:text-red-600 transition-colors ml-auto"
+                                  >
+                                     <TrashIcon />
+                                     Delete
+                                  </button>
+                                )}
                               </div>
                            </div>
                         </div>

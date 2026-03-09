@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Project, ProjectStatus, MaterialItem } from '../types';
 import { moderateComment } from '../moderation';
+import { moderateImage } from '../imageModeration';
 
 interface AddProjectProps {
   onBack: () => void;
@@ -17,6 +18,7 @@ const AddProject: React.FC<AddProjectProps> = ({ onBack, onSubmit }) => {
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState<ProjectStatus>('Developing Project');
   const [image, setImage] = useState<string | null>(null);
+  const [isModerating, setIsModerating] = useState(false);
   const [verificationDoc, setVerificationDoc] = useState<string | null>(null);
   const [materials, setMaterials] = useState<MaterialItem[]>([
     { material: '', unit: '', price: '' }
@@ -25,14 +27,33 @@ const AddProject: React.FC<AddProjectProps> = ({ onBack, onSubmit }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const docInputRef = useRef<HTMLInputElement>(null);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (image && image.startsWith('blob:')) {
-        URL.revokeObjectURL(image);
-      }
+      setIsModerating(true);
       const url = URL.createObjectURL(file);
-      setImage(url);
+      
+      try {
+        const result = await moderateImage(url);
+        
+        if (!result.isAllowed) {
+          alert(`Image rejected: ${result.reason}`);
+          URL.revokeObjectURL(url);
+          setIsModerating(false);
+          return;
+        }
+
+        if (image && image.startsWith('blob:')) {
+          URL.revokeObjectURL(image);
+        }
+        setImage(url);
+      } catch (err) {
+        console.error("Moderation failed", err);
+        // Default to allow if check fails (or choice based on product needs)
+        setImage(url);
+      } finally {
+        setIsModerating(false);
+      }
     }
   };
 
@@ -115,10 +136,15 @@ const AddProject: React.FC<AddProjectProps> = ({ onBack, onSubmit }) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         <div className="space-y-6">
           <div 
-            onClick={() => fileInputRef.current?.click()}
-            className={`w-full aspect-video rounded-[2.5rem] border-4 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:border-[#8B3A2B] hover:bg-white transition-all overflow-hidden relative shadow-inner ${image ? 'border-none' : ''}`}
+            onClick={() => !isModerating && fileInputRef.current?.click()}
+            className={`w-full aspect-video rounded-[2.5rem] border-4 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:border-[#8B3A2B] hover:bg-white transition-all overflow-hidden relative shadow-inner ${image ? 'border-none' : ''} ${isModerating ? 'opacity-50 cursor-wait' : ''}`}
           >
-            {image ? (
+            {isModerating ? (
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-10 h-10 border-4 border-[#8B3A2B] border-t-transparent rounded-full animate-spin"></div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#8B3A2B] animate-pulse">Analyzing...</span>
+              </div>
+            ) : image ? (
               <img src={image} className="w-full h-full object-cover" alt="Preview" />
             ) : (
               <>
@@ -126,7 +152,7 @@ const AddProject: React.FC<AddProjectProps> = ({ onBack, onSubmit }) => {
                 <span className="text-gray-400 font-bold uppercase tracking-widest text-xs">Add Project Image</span>
               </>
             )}
-            <input ref={fileInputRef} type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+            <input ref={fileInputRef} type="file" className="hidden" accept="image/*" onChange={handleImageChange} disabled={isModerating} />
           </div>
 
           <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm space-y-6">

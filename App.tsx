@@ -150,7 +150,7 @@ const App: React.FC = () => {
     }));
   };
 
-  const handleAddComment = (projectId: string, text: string, image?: string) => {
+  const handleAddComment = (projectId: string, text: string, image?: string, isInformative?: boolean, isPrivateEvidence?: boolean) => {
     setProjects(prev => prev.map(p => {
       if (p.id !== projectId) return p;
       const newComment = {
@@ -158,12 +158,15 @@ const App: React.FC = () => {
         author: 'Guest User',
         role: 'Community Member',
         text,
-        image,
+        image: isPrivateEvidence ? undefined : image,
         avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88a9.947 9.947 0 0 1 12.28 0C16.43 19.18 14.03 20 12 20z"/></svg>',
         date: new Date().toISOString().split('T')[0],
         upvotes: 0,
         downvotes: 0,
-        replies: []
+        replies: [],
+        isInformative,
+        isVerified: !!image,
+        isPrivateEvidence
       };
       return {
         ...p,
@@ -193,6 +196,32 @@ const App: React.FC = () => {
           return {
             ...c,
             replies: [...c.replies, newReply]
+          };
+        })
+      };
+    }));
+  };
+
+  const handleDeleteComment = (projectId: string, commentId: string) => {
+    setProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      return {
+        ...p,
+        comments: p.comments.filter(c => c.id !== commentId)
+      };
+    }));
+  };
+
+  const handleDeleteReply = (projectId: string, parentCommentId: string, replyId: string) => {
+    setProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      return {
+        ...p,
+        comments: p.comments.map(c => {
+          if (c.id !== parentCommentId) return c;
+          return {
+            ...c,
+            replies: c.replies.filter(r => r.id !== replyId)
           };
         })
       };
@@ -260,8 +289,10 @@ const App: React.FC = () => {
             onVote={(type) => handleVote(project.id, type)}
             currentUserVote={userVotes[project.id] || null}
             onUpdateStatus={(status) => handleUpdateProjectStatus(project.id, status)}
-            onAddComment={(text, img) => handleAddComment(project.id, text, img)}
+            onAddComment={(text, img, isInformative, isPrivateEvidence) => handleAddComment(project.id, text, img, isInformative, isPrivateEvidence)}
             onAddReply={(commentId, text) => handleAddReply(project.id, commentId, text)}
+            onDeleteComment={(commentId) => handleDeleteComment(project.id, commentId)}
+            onDeleteReply={(parentCommentId, replyId) => handleDeleteReply(project.id, parentCommentId, replyId)}
             onCommentVote={(commentId, type, isReply, parentId) => handleCommentVote(project.id, commentId, type, isReply, parentId)}
             commentVotes={commentVotes}
             onMaterialClick={handleMaterialClick}

@@ -18,6 +18,9 @@ export interface ProjectComment {
   upvotes: number;
   downvotes: number;
   replies: ProjectComment[];
+  isInformative?: boolean;
+  isVerified?: boolean;
+  isPrivateEvidence?: boolean;
 }
 
 export interface Project {

@@ -1,6 +1,8 @@
 export interface ModerationResult {
   isAllowed: boolean;
   reason?: string;
+  isInformative?: boolean;
+  specificityScore?: number;
 }
 
 const BLOCKED_WORDS = [
@@ -13,13 +15,48 @@ const BLOCKED_WORDS = [
   'terror-tag', 'teror-tag', 'terrorist-tag', 'kakistocracy', 'demagogue', 'troll', 'bayaran', 'bulag', 'panatiko'
 ];
 
+export const analyzeSpecificity = (text: string): { score: number; isInformative: boolean } => {
+  let score = 0;
+  const lowerText = text.toLowerCase();
+  
+  // Dates
+  if (/\b(jan(uary)?|feb(ruary)?|mar(ch)?|apr(il)?|may|jun(e)?|jul(y)?|aug(ust)?|sep(tember)?|oct(ober)?|nov(ember)?|dec(ember)?)\s+\d{1,2}\b/.test(lowerText)) score += 2;
+  if (/\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/.test(lowerText)) score += 2;
+  
+  // Measurements
+  const measurements = ['kg', 'tons', 'meters', 'mm', 'cm', 'bags', 'grade', 'inches'];
+  measurements.forEach(m => {
+    if (new RegExp(`\\b\\d+\\s*${m}\\b`).test(lowerText) || new RegExp(`grade\\s*[a-z]`, 'i').test(lowerText)) score += 1;
+  });
+
+  // Industry terms
+  const terms = ['contractor', 'subcontractor', 'cement', 'steel', 'foundation', 'blueprint', 'memo', 'permit', 'audit', 'budget', 'deadline', 'delayed', 'poured', 'beam', 'pillar', 'reinforcing', 'supplier', 'inspector', 'concrete', 'asphalt'];
+  
+  let termCount = 0;
+  terms.forEach(term => {
+    if (lowerText.includes(term)) termCount++;
+  });
+  
+  score += Math.min(termCount, 5); // limit term score to 5 points
+  
+  // Length bonus
+  if (text.length > 50) score += 1;
+  if (text.length > 150) score += 1;
+
+  score = Math.min(score, 10);
+  
+  return {
+    score,
+    // Threshold for informative might be score >= 4
+    isInformative: score >= 4
+  };
+};
+
 export const moderateComment = (text: string): ModerationResult => {
   const lowerText = text.toLowerCase();
   
   for (const word of BLOCKED_WORDS) {
-    // Escape special characters in the word for regex
     const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    // Using word boundaries to avoid false positives like 'npa' in 'unpaid' or 'tanga' in 'tangal'
     const regex = new RegExp(`(^|[^a-zA-Z0-9])${escapedWord}($|[^a-zA-Z0-9])`, 'i');
     if (regex.test(lowerText)) {
       return {
@@ -29,8 +66,11 @@ export const moderateComment = (text: string): ModerationResult => {
     }
   }
 
-  // Also check for general substrings for stronger matching (optional, might cause false positives like 'npa' in 'unpaid')
-  // We'll stick to word boundaries (\b) primarily for safety, but we can do substring for specific toxic patterns if needed.
+  const specificityInfo = analyzeSpecificity(text);
 
-  return { isAllowed: true };
+  return { 
+    isAllowed: true,
+    isInformative: specificityInfo.isInformative,
+    specificityScore: specificityInfo.score
+  };
 };
