@@ -11,6 +11,9 @@ interface ProjectDetailProps {
   currentUserVote: 'up' | 'down' | null;
   onUpdateStatus: (status: ProjectStatus) => void;
   onAddComment: (text: string, image?: string) => void;
+  onAddReply: (commentId: string, text: string) => void;
+  onCommentVote: (commentId: string, type: 'up' | 'down', isReply: boolean, parentId?: string) => void;
+  commentVotes: Record<string, 'up' | 'down' | null>;
   onMaterialClick: (materialName: string) => void;
   isAdmin: boolean;
 }
@@ -22,6 +25,9 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
   currentUserVote,
   onUpdateStatus, 
   onAddComment,
+  onAddReply,
+  onCommentVote,
+  commentVotes,
   onMaterialClick,
   isAdmin
 }) => {
@@ -29,7 +35,24 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showAllMaterials, setShowAllMaterials] = useState(false);
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSubmitReply = (e: React.FormEvent, commentId: string) => {
+    e.preventDefault();
+    if (!replyText.trim()) return;
+
+    const moderationResult = moderateComment(replyText);
+    if (!moderationResult.isAllowed) {
+      alert(moderationResult.reason || "Reply blocked by moderation");
+      return;
+    }
+
+    onAddReply(commentId, replyText);
+    setReplyText('');
+    setReplyingTo(null);
+  };
 
   const handleSubmitComment = (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,6 +95,43 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
   };
 
   const GLOBAL_DB_URL = "https://share.google/AaBXqWaNwFF6RrT0u";
+
+  const ReplyIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3">
+      <path d="M9 14l-4-4 4-4"/><path d="M5 10h11a4 4 0 1 1 0 8h-1"/>
+    </svg>
+  );
+
+  const CommentVoteControls = ({ id, upvotes, downvotes, isReply, parentId }: { id: string, upvotes: number, downvotes: number, isReply: boolean, parentId?: string }) => {
+    const vote = commentVotes[id];
+    const score = upvotes - downvotes;
+
+    return (
+      <div className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-full border border-gray-100 scale-90 origin-left">
+        <button 
+          onClick={() => onCommentVote(id, 'up', isReply, parentId)}
+          className={`hover:text-green-600 transition-colors ${vote === 'up' ? 'text-green-600' : 'text-gray-400'}`}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+            <path fillRule="evenodd" d="M11.47 2.47a.75.75 0 011.06 0l7.5 7.5a.75.75 0 11-1.06 1.06L12 4.06 5.03 11.03a.75.75 0 01-1.06-1.06l7.5-7.5z" clipRule="evenodd" />
+            <path fillRule="evenodd" d="M12 4.75a.75.75 0 01.75.75v15a.75.75 0 01-1.5 0v-15a.75.75 0 01.75-.75z" clipRule="evenodd" />
+          </svg>
+        </button>
+        <span className={`text-[10px] font-black min-w-[12px] text-center ${vote === 'up' ? 'text-green-600' : vote === 'down' ? 'text-red-600' : 'text-gray-500'}`}>
+          {score > 0 ? `+${score}` : score}
+        </span>
+        <button 
+          onClick={() => onCommentVote(id, 'down', isReply, parentId)}
+          className={`hover:text-red-600 transition-colors ${vote === 'down' ? 'text-red-600' : 'text-gray-400'}`}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+            <path fillRule="evenodd" d="M12 20.25a.75.75 0 01-.75-.75V4.5a.75.75 0 011.5 0v15a.75.75 0 01-.75.75z" clipRule="evenodd" />
+            <path fillRule="evenodd" d="M12 19.94l6.97-6.97a.75.75 0 111.06 1.06l-7.5 7.5a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 111.06-1.06l6.97 6.97z" clipRule="evenodd" />
+          </svg>
+        </button>
+      </div>
+    );
+  };
 
   return (
     <div className="max-w-6xl mx-auto space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -184,17 +244,17 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
                     <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl transition-all shadow-sm ${
                       currentUserVote === 'down' 
                         ? 'bg-red-500 text-white shadow-lg shadow-red-200' 
-                        : 'bg-red-50 text-red-600 group-hover:bg-red-500 group-hover:text-white'
+                        : 'bg-gray-100 text-gray-400 group-hover:bg-red-500 group-hover:text-white'
                     }`}>▼</div>
-                    <span className={`text-[10px] font-black mt-1 uppercase ${currentUserVote === 'down' ? 'text-red-500' : 'text-red-600'}`}>Downvote</span>
+                    <span className={`text-[10px] font-black mt-1 uppercase ${currentUserVote === 'down' ? 'text-red-500' : 'text-gray-400'}`}>Downvote</span>
                  </button>
                  <button onClick={() => onVote('up')} className="flex flex-col items-center group">
                     <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl transition-all shadow-sm ${
                       currentUserVote === 'up' 
                         ? 'bg-green-500 text-white shadow-lg shadow-green-200' 
-                        : 'bg-green-50 text-green-600 group-hover:bg-green-500 group-hover:text-white'
+                        : 'bg-gray-100 text-gray-400 group-hover:bg-green-500 group-hover:text-white'
                     }`}>▲</div>
-                    <span className={`text-[10px] font-black mt-1 uppercase ${currentUserVote === 'up' ? 'text-green-500' : 'text-green-600'}`}>Upvote</span>
+                    <span className={`text-[10px] font-black mt-1 uppercase ${currentUserVote === 'up' ? 'text-green-500' : 'text-gray-400'}`}>Upvote</span>
                  </button>
               </div>
            </div>
@@ -315,23 +375,82 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
            <div className="space-y-4">
               <h3 className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-4">Discussion Feed</h3>
               {project.comments.map(c => (
-                <div key={c.id} className="bg-white p-5 rounded-3xl border border-gray-100 flex gap-4 hover:shadow-md transition-shadow">
-                   <img src={c.avatar} className="w-10 h-10 rounded-full flex-shrink-0" alt="" />
-                   <div className="space-y-2 flex-grow">
-                      <div className="flex justify-between items-start">
-                         <div>
-                            <span className="font-bold text-gray-900 mr-2 text-sm uppercase tracking-tight">{c.author}</span>
-                            <span className="text-[8px] font-black uppercase bg-gray-100 px-2 py-0.5 rounded text-gray-500">{c.role}</span>
-                         </div>
-                         <span className="text-[10px] text-gray-400 font-mono">{c.date}</span>
-                      </div>
-                      <p className="text-sm text-gray-700 leading-relaxed font-medium">{c.text}</p>
-                      {c.image && (
-                        <div className="mt-2 rounded-2xl overflow-hidden border border-gray-100 max-w-[240px] shadow-sm">
-                           <img src={c.image} className="w-full h-auto cursor-zoom-in hover:scale-105 transition-transform" alt="Evidence" />
+                <div key={c.id} className="space-y-3">
+                  <div className="bg-white p-5 rounded-3xl border border-gray-100 flex gap-4 hover:shadow-sm transition-shadow">
+                     <img src={c.avatar} className="w-10 h-10 rounded-full flex-shrink-0" alt="" />
+                     <div className="space-y-2 flex-grow">
+                        <div className="flex justify-between items-start">
+                           <div>
+                              <span className="font-bold text-gray-900 mr-2 text-sm uppercase tracking-tight">{c.author}</span>
+                              <span className="text-[8px] font-black uppercase bg-gray-100 px-2 py-0.5 rounded text-gray-500">{c.role}</span>
+                           </div>
+                           <span className="text-[10px] text-gray-400 font-mono">{c.date}</span>
                         </div>
-                      )}
-                   </div>
+                        <p className="text-sm text-gray-700 leading-relaxed font-medium">{c.text}</p>
+                        {c.image && (
+                          <div className="mt-2 rounded-2xl overflow-hidden border border-gray-100 max-w-[240px] shadow-sm">
+                             <img src={c.image} className="w-full h-auto cursor-zoom-in hover:scale-105 transition-transform" alt="Evidence" />
+                          </div>
+                        )}
+                        
+                        {/* Thread Action Bar */}
+                        <div className="flex items-center gap-4 pt-1">
+                          <CommentVoteControls id={c.id} upvotes={c.upvotes} downvotes={c.downvotes} isReply={false} />
+                          <button 
+                            onClick={() => setReplyingTo(replyingTo === c.id ? null : c.id)}
+                            className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-[#8B3A2B] transition-colors"
+                          >
+                             <ReplyIcon />
+                             {replyingTo === c.id ? 'Cancel' : 'Reply'}
+                          </button>
+                        </div>
+
+                        {/* Inline Reply Form */}
+                        {replyingTo === c.id && (
+                          <form 
+                            onSubmit={(e) => handleSubmitReply(e, c.id)}
+                            className="mt-3 bg-gray-50/50 p-3 rounded-2xl border border-dashed border-gray-200 animate-in slide-in-from-top-2 duration-300"
+                          >
+                            <textarea 
+                              value={replyText}
+                              onChange={(e) => setReplyText(e.target.value)}
+                              placeholder={`Reply to ${c.author}...`}
+                              autoFocus
+                              className="w-full bg-transparent border-none text-sm placeholder:text-gray-300 focus:ring-0 outline-none min-h-[60px]"
+                            />
+                            <div className="flex justify-end pt-2">
+                              <button type="submit" className="bg-[#8B3A2B] text-white px-4 py-1.5 rounded-lg font-black uppercase tracking-widest text-[9px] hover:scale-105 transition-transform active:scale-95">Post Reply</button>
+                            </div>
+                          </form>
+                        )}
+                     </div>
+                  </div>
+
+                  {/* Replies (Reddit Style Nesting) */}
+                  {c.replies && c.replies.length > 0 && (
+                    <div className="ml-8 pl-5 border-l-2 border-gray-100 space-y-3">
+                      {c.replies.map(r => (
+                        <div key={r.id} className="bg-white/50 p-4 rounded-2xl border border-gray-50 flex gap-3 hover:shadow-sm transition-shadow">
+                           <img src={r.avatar} className="w-8 h-8 rounded-full flex-shrink-0" alt="" />
+                           <div className="space-y-1 flex-grow">
+                              <div className="flex justify-between items-start">
+                                 <div>
+                                    <span className="font-bold text-gray-900 mr-2 text-xs uppercase tracking-tight">{r.author}</span>
+                                    <span className="text-[7px] font-black uppercase bg-gray-100 px-1.5 py-0.5 rounded text-gray-500">{r.role}</span>
+                                 </div>
+                                 <span className="text-[9px] text-gray-300 font-mono">{r.date}</span>
+                              </div>
+                              <p className="text-xs text-gray-600 leading-relaxed">{r.text}</p>
+                              
+                              {/* Reply Action Bar */}
+                              <div className="flex items-center gap-4 pt-1">
+                                <CommentVoteControls id={r.id} upvotes={r.upvotes} downvotes={r.downvotes} isReply={true} parentId={c.id} />
+                              </div>
+                           </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
            </div>

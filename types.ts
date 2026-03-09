@@ -15,6 +15,9 @@ export interface ProjectComment {
   avatar: string;
   image?: string;
   date: string;
+  upvotes: number;
+  downvotes: number;
+  replies: ProjectComment[];
 }
 
 export interface Project {

@@ -19,10 +19,18 @@ const App: React.FC = () => {
     const saved = localStorage.getItem('brix_user_votes');
     return saved ? JSON.parse(saved) : {};
   });
+  const [commentVotes, setCommentVotes] = useState<Record<string, 'up' | 'down' | null>>(() => {
+    const saved = localStorage.getItem('brix_comment_votes');
+    return saved ? JSON.parse(saved) : {};
+  });
 
   useEffect(() => {
     localStorage.setItem('brix_user_votes', JSON.stringify(userVotes));
   }, [userVotes]);
+
+  useEffect(() => {
+    localStorage.setItem('brix_comment_votes', JSON.stringify(commentVotes));
+  }, [commentVotes]);
 
   const handleNavigateHome = () => setView({ type: 'home' });
   const handleViewProject = (id: string) => setView({ type: 'project-detail', projectId: id });
@@ -86,6 +94,51 @@ const App: React.FC = () => {
     }));
   };
 
+  const handleCommentVote = (projectId: string, commentId: string, type: 'up' | 'down', isReply: boolean = false, parentCommentId?: string) => {
+    const currentVote = commentVotes[commentId];
+
+    setProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+
+      const updateCommentVotes = (c: any) => {
+        if (c.id !== commentId) return c;
+        let newUpvotes = c.upvotes;
+        let newDownvotes = c.downvotes;
+
+        if (currentVote === type) {
+          if (type === 'up') newUpvotes--;
+          else newDownvotes--;
+        } else if (currentVote) {
+          if (type === 'up') { newUpvotes++; newDownvotes--; }
+          else { newUpvotes--; newDownvotes++; }
+        } else {
+          if (type === 'up') newUpvotes++;
+          else newDownvotes++;
+        }
+        return { ...c, upvotes: newUpvotes, downvotes: newDownvotes };
+      };
+
+      const newComments = p.comments.map(c => {
+        if (!isReply) {
+          return updateCommentVotes(c);
+        } else if (c.id === parentCommentId) {
+          return {
+            ...c,
+            replies: c.replies.map(updateCommentVotes)
+          };
+        }
+        return c;
+      });
+
+      return { ...p, comments: newComments };
+    }));
+
+    setCommentVotes(prev => ({
+      ...prev,
+      [commentId]: currentVote === type ? null : type
+    }));
+  };
+
   const handleUpdateProjectStatus = (projectId: string, newStatus: ProjectStatus) => {
     setProjects(prev => prev.map(p => {
       if (p.id !== projectId) return p;
@@ -107,11 +160,41 @@ const App: React.FC = () => {
         text,
         image,
         avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88a9.947 9.947 0 0 1 12.28 0C16.43 19.18 14.03 20 12 20z"/></svg>',
-        date: new Date().toISOString().split('T')[0]
+        date: new Date().toISOString().split('T')[0],
+        upvotes: 0,
+        downvotes: 0,
+        replies: []
       };
       return {
         ...p,
         comments: [newComment, ...p.comments]
+      };
+    }));
+  };
+
+  const handleAddReply = (projectId: string, commentId: string, text: string) => {
+    setProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      const newReply = {
+        id: Math.random().toString(36).slice(2, 9),
+        author: 'Guest User',
+        role: 'Community Member',
+        text,
+        avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88a9.947 9.947 0 0 1 12.28 0C16.43 19.18 14.03 20 12 20z"/></svg>',
+        date: new Date().toISOString().split('T')[0],
+        upvotes: 0,
+        downvotes: 0,
+        replies: []
+      };
+      return {
+        ...p,
+        comments: p.comments.map(c => {
+          if (c.id !== commentId) return c;
+          return {
+            ...c,
+            replies: [...c.replies, newReply]
+          };
+        })
       };
     }));
   };
@@ -178,6 +261,9 @@ const App: React.FC = () => {
             currentUserVote={userVotes[project.id] || null}
             onUpdateStatus={(status) => handleUpdateProjectStatus(project.id, status)}
             onAddComment={(text, img) => handleAddComment(project.id, text, img)}
+            onAddReply={(commentId, text) => handleAddReply(project.id, commentId, text)}
+            onCommentVote={(commentId, type, isReply, parentId) => handleCommentVote(project.id, commentId, type, isReply, parentId)}
+            commentVotes={commentVotes}
             onMaterialClick={handleMaterialClick}
             isAdmin={isAdmin}
           />

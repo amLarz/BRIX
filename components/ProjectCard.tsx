@@ -59,9 +59,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, onVote, cur
               <span className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold transition-all ${
                 currentUserVote === 'up' 
                   ? 'bg-green-500 text-white shadow-lg shadow-green-200' 
-                  : 'bg-green-50 text-green-600 group-hover/btn:bg-green-500 group-hover/btn:text-white'
+                  : 'bg-gray-100 text-gray-400 group-hover/btn:bg-green-500 group-hover/btn:text-white'
               }`}>▲</span>
-              <span className={`text-sm font-black ${currentUserVote === 'up' ? 'text-green-600' : 'text-gray-700'}`}>{project.upvotes}</span>
+              <span className={`text-sm font-black ${currentUserVote === 'up' ? 'text-green-600' : 'text-gray-400'}`}>{project.upvotes}</span>
             </button>
             <button 
                 onClick={(e) => { e.stopPropagation(); onVote('down'); }}
@@ -70,9 +70,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, onVote, cur
               <span className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold transition-all ${
                 currentUserVote === 'down' 
                   ? 'bg-red-500 text-white shadow-lg shadow-red-200' 
-                  : 'bg-red-50 text-red-600 group-hover/btn:bg-red-500 group-hover/btn:text-white'
+                  : 'bg-gray-100 text-gray-400 group-hover/btn:bg-red-500 group-hover/btn:text-white'
               }`}>▼</span>
-              <span className={`text-sm font-black ${currentUserVote === 'down' ? 'text-red-600' : 'text-gray-700'}`}>{project.downvotes}</span>
+              <span className={`text-sm font-black ${currentUserVote === 'down' ? 'text-red-600' : 'text-gray-400'}`}>{project.downvotes}</span>
             </button>
           </div>
           <button 

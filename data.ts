@@ -27,7 +27,22 @@ export const INITIAL_PROJECTS: Project[] = [
         role: 'Citizen Auditor',
         text: 'The concrete pouring on Section 4 seems consistent with standards, but Section 3 has some visible honeycombing.',
         avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88a9.947 9.947 0 0 1 12.28 0C16.43 19.18 14.03 20 12 20z"/></svg>',
-        date: '2024-03-10'
+        date: '2024-03-10',
+        upvotes: 45,
+        downvotes: 2,
+        replies: [
+          {
+            id: 'c1-r1',
+            author: 'Site Supervisor',
+            role: 'Contractor',
+            text: 'We are aware of the honeycombing in Section 3. It was due to a minor vibrator failure. We will patch it tomorrow.',
+            avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88a9.947 9.947 0 0 1 12.28 0C16.43 19.18 14.03 20 12 20z"/></svg>',
+            date: '2024-03-11',
+            upvotes: 12,
+            downvotes: 1,
+            replies: []
+          }
+        ]
       },
       {
         id: 'c1-2',
@@ -36,7 +51,10 @@ export const INITIAL_PROJECTS: Project[] = [
         text: 'I passed by earlier today and took a photo of Section 3. The honeycombing is quite noticeable.',
         avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88a9.947 9.947 0 0 1 12.28 0C16.43 19.18 14.03 20 12 20z"/></svg>',
         image: '/images/leyte_tide_protection_wall.png',
-        date: '2024-03-11'
+        date: '2024-03-11',
+        upvotes: 28,
+        downvotes: 0,
+        replies: []
       },
       {
         id: 'c1-3',
@@ -44,7 +62,10 @@ export const INITIAL_PROJECTS: Project[] = [
         role: 'Government Official',
         text: 'Thank you for the report. The contractor has been notified and remedial works will commence tomorrow.',
         avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88a9.947 9.947 0 0 1 12.28 0C16.43 19.18 14.03 20 12 20z"/></svg>',
-        date: '2024-03-12'
+        date: '2024-03-12',
+        upvotes: 15,
+        downvotes: 3,
+        replies: []
       }
     ]
   },
@@ -74,7 +95,10 @@ export const INITIAL_PROJECTS: Project[] = [
         text: 'The road is much smoother now! Hope the drainage issues were also fixed underneath.',
         avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88a9.947 9.947 0 0 1 12.28 0C16.43 19.18 14.03 20 12 20z"/></svg>',
         image: '/images/quezon_avenue_flyover.png',
-        date: '2025-01-20'
+        date: '2025-01-20',
+        upvotes: 12,
+        downvotes: 1,
+        replies: []
       },
       {
         id: 'c2-2',
@@ -83,7 +107,10 @@ export const INITIAL_PROJECTS: Project[] = [
         text: 'Yes! Less traffic buildup during rush hour. Here is how it looks right now from my dashcam.',
         avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88a9.947 9.947 0 0 1 12.28 0C16.43 19.18 14.03 20 12 20z"/></svg>',
         image: '/images/quezon_avenue_flyover.png',
-        date: '2025-01-21'
+        date: '2025-01-21',
+        upvotes: 8,
+        downvotes: 0,
+        replies: []
       },
       {
         id: 'c2-3',
@@ -91,7 +118,10 @@ export const INITIAL_PROJECTS: Project[] = [
         role: 'Project Manager',
         text: 'Drainage clearing was included in Phase 2 before the asphalt overlay. It should hold up well during the rainy season.',
         avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88a9.947 9.947 0 0 1 12.28 0C16.43 19.18 14.03 20 12 20z"/></svg>',
-        date: '2025-01-22'
+        date: '2025-01-22',
+        upvotes: 34,
+        downvotes: 2,
+        replies: []
       }
     ]
   },
@@ -120,7 +150,10 @@ export const INITIAL_PROJECTS: Project[] = [
         role: 'Citizen',
         text: 'The toll system has been acting up lately, causing delays. Anyone else experiencing this?',
         avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88a9.947 9.947 0 0 1 12.28 0C16.43 19.18 14.03 20 12 20z"/></svg>',
-        date: '2023-11-05'
+        date: '2023-11-05',
+        upvotes: 56,
+        downvotes: 4,
+        replies: []
       },
       {
         id: 'cclex-2',
@@ -129,7 +162,10 @@ export const INITIAL_PROJECTS: Project[] = [
         text: 'The recent structural health monitoring report indicates normal tension on the high-tensile cables.',
         avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88a9.947 9.947 0 0 1 12.28 0C16.43 19.18 14.03 20 12 20z"/></svg>',
         image: '/images/sabu_cordova_expressway.png',
-        date: '2023-11-10'
+        date: '2023-11-10',
+        upvotes: 120,
+        downvotes: 1,
+        replies: []
       },
       {
         id: 'cclex-3',
@@ -137,7 +173,10 @@ export const INITIAL_PROJECTS: Project[] = [
         role: 'Official',
         text: 'It also looks beautiful at night! A huge boost for our local tourism.',
         avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88a9.947 9.947 0 0 1 12.28 0C16.43 19.18 14.03 20 12 20z"/></svg>',
-        date: '2023-11-12'
+        date: '2023-11-12',
+        upvotes: 89,
+        downvotes: 0,
+        replies: []
       }
     ]
   },
@@ -165,7 +204,10 @@ export const INITIAL_PROJECTS: Project[] = [
         role: 'Citizen Auditor',
         text: 'The tunnel boring progress is slower than scheduled in the Valenzuela site. Need eyes on the procurement logs.',
         avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88a9.947 9.947 0 0 1 12.28 0C16.43 19.18 14.03 20 12 20z"/></svg>',
-        date: '2025-03-01'
+        date: '2025-03-01',
+        upvotes: 42,
+        downvotes: 3,
+        replies: []
       },
       {
         id: 'sub-2',
@@ -174,7 +216,10 @@ export const INITIAL_PROJECTS: Project[] = [
         text: 'We experienced delays due to unexpected hard rock formations. The machinery has been recalibrated. Here is a view of the current excavation phase.',
         avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88a9.947 9.947 0 0 1 12.28 0C16.43 19.18 14.03 20 12 20z"/></svg>',
         image: '/images/metro_manila_subway_phase1.png',
-        date: '2025-03-03'
+        date: '2025-03-03',
+        upvotes: 25,
+        downvotes: 1,
+        replies: []
       },
       {
         id: 'sub-3',
@@ -182,7 +227,10 @@ export const INITIAL_PROJECTS: Project[] = [
         role: 'Citizen NGO',
         text: 'Are the replacement cut-heads included in the original budget or will this require additional funding?',
         avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88a9.947 9.947 0 0 1 12.28 0C16.43 19.18 14.03 20 12 20z"/></svg>',
-        date: '2025-03-04'
+        date: '2025-03-04',
+        upvotes: 67,
+        downvotes: 0,
+        replies: []
       }
     ]
   },
@@ -210,7 +258,10 @@ export const INITIAL_PROJECTS: Project[] = [
         role: 'Traveler',
         text: 'Is the new terminal expansion going to include better lounge areas? The current setup gets too crowded.',
         avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88a9.947 9.947 0 0 1 12.28 0C16.43 19.18 14.03 20 12 20z"/></svg>',
-        date: '2025-04-10'
+        date: '2025-04-10',
+        upvotes: 31,
+        downvotes: 4,
+        replies: []
       },
       {
         id: 'bia-2',
@@ -219,7 +270,10 @@ export const INITIAL_PROJECTS: Project[] = [
         text: 'Yes! The new expansion includes a dedicated transit lounge and additional gates with glass curtain walls letting in natural light.',
         avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88a9.947 9.947 0 0 1 12.28 0C16.43 19.18 14.03 20 12 20z"/></svg>',
         image: 'https://images.unsplash.com/photo-1436491865332-7a61a109c0f3?auto=format&fit=crop&q=80&w=1200',
-        date: '2025-04-12'
+        date: '2025-04-12',
+        upvotes: 52,
+        downvotes: 2,
+        replies: []
       },
       {
         id: 'bia-3',
@@ -227,7 +281,10 @@ export const INITIAL_PROJECTS: Project[] = [
         role: 'Business Owner',
         text: 'Looking forward to this. Hopefully more space for local concessionaires to sell Bicol specialties!',
         avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88a9.947 9.947 0 0 1 12.28 0C16.43 19.18 14.03 20 12 20z"/></svg>',
-        date: '2025-04-15'
+        date: '2025-04-15',
+        upvotes: 45,
+        downvotes: 0,
+        replies: []
       }
     ]
   }
