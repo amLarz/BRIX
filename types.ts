@@ -20,7 +20,6 @@ export interface ProjectComment {
   replies: ProjectComment[];
   isInformative?: boolean;
   isVerified?: boolean;
-  isPrivateEvidence?: boolean;
 }
 
 export interface Project {
@@ -61,4 +60,16 @@ export type ViewState =
   | { type: 'project-detail'; projectId: string }
   | { type: 'material-prices'; categoryId: string }
   | { type: 'add-project' }
-  | { type: 'about' };
+  | { type: 'about' }
+  | { type: 'news' };
+
+export interface NewsArticle {
+  id: string;
+  title: string;
+  url: string;
+  location: string;
+  imageUrl: string;
+  date: string;
+  network: string;
+  summary: string;
+}

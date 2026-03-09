@@ -8,6 +8,8 @@ import ProjectDetail from './components/ProjectDetail';
 import MaterialPriceList from './components/MaterialPriceList';
 import AddProject from './components/AddProject';
 import About from './components/About';
+import NewsFeed from './components/NewsFeed';
+import { INFRASTRUCTURE_NEWS } from './data';
 
 const App: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
@@ -37,6 +39,7 @@ const App: React.FC = () => {
   const handleViewPrices = (id: string) => setView({ type: 'material-prices', categoryId: id });
   const handleAddProjectView = () => setView({ type: 'add-project' });
   const handleViewAbout = () => setView({ type: 'about' });
+  const handleViewNews = () => setView({ type: 'news' });
 
   const handleMaterialClick = (materialName: string) => {
     const category = MATERIAL_CATEGORIES.find(cat => 
@@ -150,7 +153,8 @@ const App: React.FC = () => {
     }));
   };
 
-  const handleAddComment = (projectId: string, text: string, image?: string, isInformative?: boolean, isPrivateEvidence?: boolean) => {
+  const handleAddComment = (projectId: string, text: string, image?: string, isInformative?: boolean) => {
+
     setProjects(prev => prev.map(p => {
       if (p.id !== projectId) return p;
       const newComment = {
@@ -158,16 +162,16 @@ const App: React.FC = () => {
         author: 'Guest User',
         role: 'Community Member',
         text,
-        image: isPrivateEvidence ? undefined : image,
+        image,
         avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88a9.947 9.947 0 0 1 12.28 0C16.43 19.18 14.03 20 12 20z"/></svg>',
         date: new Date().toISOString().split('T')[0],
         upvotes: 0,
         downvotes: 0,
         replies: [],
         isInformative,
-        isVerified: !!image,
-        isPrivateEvidence
+        isVerified: !!image
       };
+
       return {
         ...p,
         comments: [newComment, ...p.comments]
@@ -289,7 +293,8 @@ const App: React.FC = () => {
             onVote={(type) => handleVote(project.id, type)}
             currentUserVote={userVotes[project.id] || null}
             onUpdateStatus={(status) => handleUpdateProjectStatus(project.id, status)}
-            onAddComment={(text, img, isInformative, isPrivateEvidence) => handleAddComment(project.id, text, img, isInformative, isPrivateEvidence)}
+            onAddComment={(text, img, isInformative) => handleAddComment(project.id, text, img, isInformative)}
+
             onAddReply={(commentId, text) => handleAddReply(project.id, commentId, text)}
             onDeleteComment={(commentId) => handleDeleteComment(project.id, commentId)}
             onDeleteReply={(parentCommentId, replyId) => handleDeleteReply(project.id, parentCommentId, replyId)}
@@ -307,6 +312,8 @@ const App: React.FC = () => {
         return <AddProject onBack={handleNavigateHome} onSubmit={handleCreateProject} />;
       case 'about':
         return <About onBack={handleNavigateHome} />;
+      case 'news':
+        return <NewsFeed articles={INFRASTRUCTURE_NEWS} />;
       default:
         return <div>404 - Not Found</div>;
     }
@@ -320,7 +327,8 @@ const App: React.FC = () => {
         onHomeClick={handleNavigateHome}
         onAddClick={handleAddProjectView}
         onAboutClick={handleViewAbout}
-        showSearch={view.type !== 'about'}
+        onNewsClick={handleViewNews}
+        showSearch={view.type === 'home' || view.type === 'news'}
         isAdmin={isAdmin}
       />
       <main className="container mx-auto px-4 mt-8 pb-20">

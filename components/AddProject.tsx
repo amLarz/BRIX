@@ -36,17 +36,11 @@ const AddProject: React.FC<AddProjectProps> = ({ onBack, onSubmit }) => {
       try {
         const result = await moderateImage(url);
         
-        if (!result.isAllowed) {
-          alert(`Image rejected: ${result.reason}`);
-          URL.revokeObjectURL(url);
-          setIsModerating(false);
-          return;
-        }
-
         if (image && image.startsWith('blob:')) {
           URL.revokeObjectURL(image);
         }
         setImage(url);
+
       } catch (err) {
         console.error("Moderation failed", err);
         // Default to allow if check fails (or choice based on product needs)

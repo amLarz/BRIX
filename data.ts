@@ -1,5 +1,5 @@
 
-import { Project, MaterialCategory } from './types';
+import { Project, MaterialCategory, NewsArticle } from './types';
 
 export const INITIAL_PROJECTS: Project[] = [
   {
@@ -342,5 +342,78 @@ export const MATERIAL_CATEGORIES: MaterialCategory[] = [
       { name: 'Deformed Bar 12mm', unit: 'pc', price: 'PhP 310.00', sourceUrl: 'https://skanska.com', sourceName: 'Skanska Insights 2026' },
       { name: 'G.I. Pipe 1-1/2"', unit: 'pc', price: 'PhP 840.00', sourceUrl: 'https://gordian.com', sourceName: 'Gordian Prices' },
     ]
+  }
+];
+
+export const INFRASTRUCTURE_NEWS: NewsArticle[] = [
+  {
+    id: 'news-1',
+    title: 'DPWH Completes Widening of Radial Road 10',
+    url: 'https://www.gmanetwork.com/news/topstories/',
+    location: 'Metro Manila',
+    imageUrl: 'https://images.unsplash.com/photo-1545558014-8692077e9b5c?auto=format&fit=crop&q=80&w=800',
+    date: '2026-03-05',
+    network: 'GMA News',
+    summary: 'The Department of Public Works and Highways has announced the completion of the R-10 widening project to ease port congestion.'
+  },
+  {
+    id: 'news-2',
+    title: 'Cebu BRT Phase 1 Nears Completion',
+    url: 'https://www.gmanetwork.com/news/archives/topstories-regions/',
+    location: 'Cebu, Visayas',
+    imageUrl: 'https://images.unsplash.com/photo-1512413915147-1510e14a27dc?auto=format&fit=crop&q=80&w=800',
+    date: '2026-03-06',
+    network: 'GMA News',
+    summary: 'Cebu City\'s long-awaited Bus Rapid Transit system is on track for partial operations by the third quarter of this year.'
+  },
+  {
+    id: 'news-3',
+    title: 'New Mindanao Railway segment breaks ground',
+    url: 'https://www.gmanetwork.com/news/archives/topstories-nation/',
+    location: 'Davao, Mindanao',
+    imageUrl: 'https://images.unsplash.com/photo-1471623547460-6b2de5d37c8e?auto=format&fit=crop&q=80&w=800',
+    date: '2026-03-08',
+    network: 'GMA News',
+    summary: 'The groundbreaking ceremony for the Tagum-Davao-Digos segment of the Mindanao Railway Project was held earlier today.'
+  },
+  {
+    id: 'news-4',
+    title: 'Pasig River Expressway (PAREX) Project Review',
+    url: 'https://www.gmanetwork.com/news/archives/topstories-metro/',
+    location: 'Metro Manila',
+    imageUrl: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&q=80&w=800',
+    date: '2026-03-09',
+    network: 'GMA Tracking',
+    summary: 'Environmental groups and urban planners are calling for a strict review of the controversial Pasig River Expressway project.'
+  },
+  {
+    id: 'news-5',
+    title: 'NEDA Approves 3 New Regional Airport Upgrades',
+    url: 'https://www.gmanetwork.com/news/money/economy/',
+    location: 'Visayas',
+    imageUrl: 'https://images.unsplash.com/photo-1436491865332-7a61a109c0f3?auto=format&fit=crop&q=80&w=800',
+    date: '2026-03-02',
+    network: 'GMA News',
+    summary: 'To boost local tourism, NEDA has greenlit the expansion of regional airports in Bohol, Iloilo, and Bacolod.'
+  },
+  {
+    id: 'news-6',
+    title: 'Solar-Powered Streetlights Installed in Ilocos Sur',
+    url: 'https://www.gmanetwork.com/news/tracking/infrastructure/',
+    location: 'Luzon',
+    imageUrl: 'https://images.unsplash.com/photo-1548048026-5a1a941d93d3?auto=format&fit=crop&q=80&w=800',
+    date: '2026-02-28',
+    network: 'GMA Regional TV',
+    summary: 'Over 500 solar-powered streetlights have been installed along the national highway in Ilocos Sur to promote sustainability.'
+  },
+  {
+    id: 'news-7',
+    title: 'Laguna Lakeshore Road Network Project Update',
+    url: 'https://www.gmanetwork.com/news/tracking/',
+    location: 'Luzon',
+    imageUrl: 'https://images.unsplash.com/photo-1584824486516-0555a07fc511?auto=format&fit=crop&q=80&w=800',
+    date: '2026-03-07',
+    network: 'GMA News',
+    summary: 'Phase 1 of the Laguna Lakeshore Road Network, connecting Taguig to Calamba, is now 40% complete.'
   }
 ];

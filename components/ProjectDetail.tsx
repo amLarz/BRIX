@@ -10,7 +10,8 @@ interface ProjectDetailProps {
   onVote: (type: 'up' | 'down') => void;
   currentUserVote: 'up' | 'down' | null;
   onUpdateStatus: (status: ProjectStatus) => void;
-  onAddComment: (text: string, image?: string, isInformative?: boolean, isPrivateEvidence?: boolean) => void;
+  onAddComment: (text: string, image?: string, isInformative?: boolean) => void;
+
   onAddReply: (commentId: string, text: string) => void;
   onDeleteComment: (commentId: string) => void;
   onDeleteReply: (parentCommentId: string, replyId: string) => void;
@@ -42,7 +43,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [expandedComments, setExpandedComments] = useState<Record<string, boolean>>({});
   const [replyText, setReplyText] = useState('');
-  const [isPrivateEvidence, setIsPrivateEvidence] = useState(false);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmitReply = (e: React.FormEvent, commentId: string) => {
@@ -72,10 +73,9 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
       return;
     }
 
-    onAddComment(commentText, previewImage || undefined, moderationResult.isInformative, isPrivateEvidence);
+    onAddComment(commentText, previewImage || undefined, moderationResult.isInformative);
     setCommentText('');
     setPreviewImage(null);
-    setIsPrivateEvidence(false);
     setError(null);
   };
 
@@ -390,21 +390,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
                     <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
                  </div>
                  
-                 {previewImage && (
-                   <div className="flex items-center gap-2 px-2 animate-in fade-in duration-300">
-                     <label className="flex items-center gap-2 cursor-pointer group">
-                       <input 
-                         type="checkbox" 
-                         checked={isPrivateEvidence}
-                         onChange={(e) => setIsPrivateEvidence(e.target.checked)}
-                         className="w-4 h-4 rounded border-gray-300 text-[#8B3A2B] focus:ring-[#8B3A2B]"
-                       />
-                       <span className="text-xs font-bold text-gray-700 group-hover:text-gray-900">
-                         Keep Evidence Private (AI / Mod Verification Only)
-                       </span>
-                     </label>
-                   </div>
-                 )}
+
                  <div className="flex items-center justify-end">
                     <div className="flex items-center gap-4">
                        {error && (
@@ -429,16 +415,11 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
                            <div>
                               <span className="font-bold text-gray-900 mr-2 text-sm uppercase tracking-tight">{c.author}</span>
                               <span className="text-[8px] font-black uppercase bg-gray-100 px-2 py-0.5 rounded text-gray-500">{c.role}</span>
-                              {c.isVerified && c.isPrivateEvidence && (
-                                <span className="ml-2 inline-block text-[8px] font-black uppercase bg-purple-100 text-purple-700 px-2 py-0.5 rounded border border-purple-200">
-                                  ✓ System Corroborated
-                                </span>
-                              )}
-                              {c.isVerified && !c.isPrivateEvidence && (
-                                <span className="ml-2 inline-block text-[8px] font-black uppercase bg-green-100 text-green-700 px-2 py-0.5 rounded border border-green-200">
-                                  ✓ Verified Media
-                                </span>
-                              )}
+                              {c.isVerified && (
+                                 <span className="ml-2 inline-block text-[8px] font-black uppercase bg-green-100 text-green-700 px-2 py-0.5 rounded border border-green-200">
+                                   ✓ Verified Media
+                                 </span>
+                               )}
                               {c.isInformative && !c.isVerified && (
                                 <span className="ml-2 inline-block text-[8px] font-black uppercase bg-blue-100 text-blue-700 px-2 py-0.5 rounded border border-blue-200">
                                   ℹ Detailed Claim
