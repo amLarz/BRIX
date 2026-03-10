@@ -13,17 +13,19 @@ interface HomeProps {
   userVotes: Record<string, 'up' | 'down' | null>;
   sortOrder: 'recent' | 'trending';
   onSortChange: (order: 'recent' | 'trending') => void;
+  isAdmin?: boolean;
 }
 
-const Home: React.FC<HomeProps> = ({ 
-  projects, 
-  categories, 
-  onProjectClick, 
-  onCategoryClick, 
+const Home: React.FC<HomeProps> = ({
+  projects,
+  categories,
+  onProjectClick,
+  onCategoryClick,
   onVote,
   userVotes,
   sortOrder,
-  onSortChange 
+  onSortChange,
+  isAdmin
 }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -35,38 +37,37 @@ const Home: React.FC<HomeProps> = ({
       {/* Main Grid */}
       <div className="lg:col-span-9 order-1 lg:order-2">
         <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-2xl font-black italic tracking-tighter text-gray-900 border-b-4 border-[#8B3A2B]">ACTIVE DISCUSSIONS</h2>
-            <div className="flex gap-2">
-                <button 
-                  onClick={() => onSortChange('trending')}
-                  className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all shadow-sm border ${
-                    sortOrder === 'trending' 
-                      ? 'bg-[#8B3A2B] text-white border-[#8B3A2B]' 
-                      : 'bg-white text-gray-400 border-gray-200 hover:border-[#8B3A2B] hover:text-[#8B3A2B]'
-                  }`}
-                >
-                  Trending
-                </button>
-                <button 
-                  onClick={() => onSortChange('recent')}
-                  className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all shadow-sm border ${
-                    sortOrder === 'recent' 
-                      ? 'bg-[#8B3A2B] text-white border-[#8B3A2B]' 
-                      : 'bg-white text-gray-400 border-gray-200 hover:border-[#8B3A2B] hover:text-[#8B3A2B]'
-                  }`}
-                >
-                  Recent
-                </button>
-            </div>
+          <h2 className="text-2xl font-black italic tracking-tighter text-gray-900 border-b-4 border-[#8B3A2B]">ACTIVE DISCUSSIONS</h2>
+          <div className="flex gap-2">
+            <button
+              onClick={() => onSortChange('trending')}
+              className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all shadow-sm border ${sortOrder === 'trending'
+                  ? 'bg-[#8B3A2B] text-white border-[#8B3A2B]'
+                  : 'bg-white text-gray-400 border-gray-200 hover:border-[#8B3A2B] hover:text-[#8B3A2B]'
+                }`}
+            >
+              Trending
+            </button>
+            <button
+              onClick={() => onSortChange('recent')}
+              className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all shadow-sm border ${sortOrder === 'recent'
+                  ? 'bg-[#8B3A2B] text-white border-[#8B3A2B]'
+                  : 'bg-white text-gray-400 border-gray-200 hover:border-[#8B3A2B] hover:text-[#8B3A2B]'
+                }`}
+            >
+              Recent
+            </button>
+          </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {projects.map(project => (
-            <ProjectCard 
-              key={project.id} 
-              project={project} 
-              onClick={() => onProjectClick(project.id)} 
+            <ProjectCard
+              key={project.id}
+              project={project}
+              onClick={() => onProjectClick(project.id)}
               onVote={(type) => onVote(project.id, type)}
               currentUserVote={userVotes[project.id] || null}
+              isAdmin={isAdmin}
             />
           ))}
           {projects.length === 0 && (

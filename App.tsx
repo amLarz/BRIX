@@ -26,6 +26,8 @@ const App: React.FC = () => {
     return saved ? JSON.parse(saved) : {};
   });
 
+  const currentUser = 'Guest User';
+
   useEffect(() => {
     localStorage.setItem('brix_user_votes', JSON.stringify(userVotes));
   }, [userVotes]);
@@ -42,13 +44,13 @@ const App: React.FC = () => {
   const handleViewNews = () => setView({ type: 'news' });
 
   const handleMaterialClick = (materialName: string) => {
-    const category = MATERIAL_CATEGORIES.find(cat => 
-      cat.items.some(item => 
+    const category = MATERIAL_CATEGORIES.find(cat =>
+      cat.items.some(item =>
         item.name.toLowerCase().includes(materialName.toLowerCase()) ||
         materialName.toLowerCase().includes(item.name.split(',')[0].toLowerCase())
       )
     );
-    
+
     if (category) {
       handleViewPrices(category.id);
     } else {
@@ -251,7 +253,7 @@ const App: React.FC = () => {
 
     // Filter
     if (searchQuery) {
-      result = result.filter(p => 
+      result = result.filter(p =>
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.location.toLowerCase().includes(searchQuery.toLowerCase())
       );
@@ -272,8 +274,8 @@ const App: React.FC = () => {
     switch (view.type) {
       case 'home':
         return (
-          <Home 
-            projects={sortedAndFilteredProjects} 
+          <Home
+            projects={sortedAndFilteredProjects}
             categories={MATERIAL_CATEGORIES}
             onProjectClick={handleViewProject}
             onCategoryClick={handleViewPrices}
@@ -281,15 +283,16 @@ const App: React.FC = () => {
             userVotes={userVotes}
             sortOrder={sortOrder}
             onSortChange={setSortOrder}
+            isAdmin={isAdmin}
           />
         );
       case 'project-detail':
         const project = projects.find(p => p.id === view.projectId);
         if (!project) return <div>Project not found</div>;
         return (
-          <ProjectDetail 
-            project={project} 
-            onBack={handleNavigateHome} 
+          <ProjectDetail
+            project={project}
+            onBack={handleNavigateHome}
             onVote={(type) => handleVote(project.id, type)}
             currentUserVote={userVotes[project.id] || null}
             onUpdateStatus={(status) => handleUpdateProjectStatus(project.id, status)}
@@ -302,6 +305,7 @@ const App: React.FC = () => {
             commentVotes={commentVotes}
             onMaterialClick={handleMaterialClick}
             isAdmin={isAdmin}
+            currentUser={currentUser}
           />
         );
       case 'material-prices':
@@ -321,9 +325,9 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F5F5F5] pb-12">
-      <Header 
-        searchQuery={searchQuery} 
-        onSearchChange={setSearchQuery} 
+      <Header
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
         onHomeClick={handleNavigateHome}
         onAddClick={handleAddProjectView}
         onAboutClick={handleViewAbout}
@@ -338,7 +342,7 @@ const App: React.FC = () => {
       {/* Floating Admin Toggle */}
       <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-white/90 backdrop-blur-md px-4 py-2.5 rounded-full shadow-2xl border border-gray-200">
         <span className={`text-[10px] font-black uppercase tracking-widest ${!isAdmin ? 'text-[#8B3A2B]' : 'text-gray-400'}`}>Citizen</span>
-        <button 
+        <button
           onClick={() => setIsAdmin(!isAdmin)}
           className={`w-12 h-6 rounded-full transition-colors relative flex items-center ${isAdmin ? 'bg-[#8B3A2B]' : 'bg-gray-300'}`}
         >
