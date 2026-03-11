@@ -360,14 +360,17 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
   const handleCmd = useCallback((cmd: string) => {
     showToastMsg('→ "' + cmd + '"');
     const SECS: Record<string, string> = {
-      home: '#sec-home', simula: '#sec-home', start: '#sec-home',
-      about: '#sec-about', tungkol: '#sec-about',
-      news: '#sec-news', balita: '#sec-news',
+      home: '#nav-home', simula: '#nav-home', start: '#nav-home',
+      about: '#nav-about', tungkol: '#nav-about',
+      news: '#nav-news', balita: '#nav-news',
     };
     for (const [kw, sel] of Object.entries(SECS)) {
       if (cmd.includes(kw)) {
-        document.querySelector(sel)?.scrollIntoView({ behavior: 'smooth' });
-        speak('Pumunta sa ' + kw, currentLang);
+        const el = document.querySelector(sel) as HTMLElement;
+        if (el) {
+          el.click();
+          speak('Pumunta sa ' + kw, currentLang);
+        }
         return;
       }
     }

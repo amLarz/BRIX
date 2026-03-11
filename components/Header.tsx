@@ -27,7 +27,7 @@ const Header: React.FC<HeaderProps> = ({
     <header className="relative w-full z-[250]">
       {/* Top Banner */}
       <div className="bg-[#8B3A2B] z-30 text-white p-5 lg:p-8 flex flex-col lg:flex-row justify-between items-start lg:items-center relative shadow-2xl">
-        <div className="z-10 group cursor-pointer select-none no-tts" onClick={onHomeClick}>
+        <div id="nav-home" className="z-10 group cursor-pointer select-none no-tts" onClick={onHomeClick}>
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-3">
               <div className="bg-white text-[#8B3A2B] px-4 py-1 rounded-sm font-black text-4xl lg:text-6xl tracking-tighter transform -skew-x-12 shadow-lg group-hover:scale-105 transition-transform">
@@ -49,6 +49,7 @@ const Header: React.FC<HeaderProps> = ({
         {/* Sleek Ergonomic Navigation Section */}
         <div className="z-10 mt-6 lg:mt-0 flex flex-wrap items-center gap-4">
            <button 
+             id="nav-news"
              onClick={onNewsClick}
              className="relative overflow-hidden px-8 py-2.5 rounded-full bg-[#8B3A2B] hover:bg-white hover:text-[#8B3A2B] border border-white/30 text-[10px] font-black uppercase tracking-widest transition-all shadow-xl backdrop-blur-sm group/btn flex items-center gap-2"
            >
@@ -60,6 +61,7 @@ const Header: React.FC<HeaderProps> = ({
              </span>
            </button>
            <button 
+             id="nav-about"
              onClick={onAboutClick}
              className="relative overflow-hidden px-6 py-2.5 rounded-full bg-black/20 hover:bg-white hover:text-[#8B3A2B] border border-white/30 text-[10px] font-black uppercase tracking-widest transition-all shadow-xl backdrop-blur-sm group/btn"
            >
