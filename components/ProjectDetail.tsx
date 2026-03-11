@@ -447,9 +447,9 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
                       </div>
                       <span className="text-[10px] text-gray-400 font-mono">{c.date}</span>
                     </div>
-                    <p className="text-sm text-gray-700 leading-relaxed font-medium">{c.text}</p>
+                    <p className="text-sm text-gray-700 leading-relaxed font-medium notranslate">{c.text}</p>
                     {c.image && (
-                      <div className="mt-2 rounded-2xl overflow-hidden border border-gray-100 max-w-[240px] shadow-sm">
+                      <div className="mt-2 rounded-2xl overflow-hidden border border-gray-100 max-w-[240px] shadow-sm no-tts">
                         <img src={c.image} className="w-full h-auto cursor-zoom-in hover:scale-105 transition-transform" alt="Evidence" />
                       </div>
                     )}
@@ -525,7 +525,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
                             </div>
                             <span className="text-[9px] text-gray-300 font-mono">{r.date}</span>
                           </div>
-                          <p className="text-xs text-gray-600 leading-relaxed">{r.text}</p>
+                          <p className="text-xs text-gray-600 leading-relaxed notranslate">{r.text}</p>
 
                           {/* Reply Action Bar */}
                           <div className="flex items-center gap-4 pt-1">

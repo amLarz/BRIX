@@ -129,3 +129,112 @@ button svg {
 button:active svg {
   transform: scale(1.2);
 }
+
+/* ===== Accessibility System ===== */
+
+/* Font size scaling */
+body.font-lg { font-size: 110%; }
+body.font-xl { font-size: 122%; }
+
+/* Scroll padding for sticky header */
+html { scroll-padding-top: 80px; }
+
+/* TTS waveform animation */
+@keyframes accWave {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.35); }
+}
+
+/* Recording pulse */
+.acc-rec-pulse {
+  animation: accRecPulse 0.8s infinite;
+}
+@keyframes accRecPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.3); }
+  50% { box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
+}
+
+/* Onboarding fadeUp */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Settings Dropdown ===== */
+.settings-dropdown {
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 20px 40px -4px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+}
+
+@keyframes settingsSlideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.settings-gear-btn:hover svg {
+  transform: rotate(45deg);
+}
+.settings-gear-btn:active svg {
+  transform: rotate(90deg) !important;
+}
+
+/* ===== TTS Click-to-Read Styles ===== */
+body.tts-on p, 
+body.tts-on h1, 
+body.tts-on h2, 
+body.tts-on h3, 
+body.tts-on h4, 
+body.tts-on h5, 
+body.tts-on h6, 
+body.tts-on li,
+body.tts-on span {
+  transition: outline 0.2s ease, background-color 0.2s ease;
+}
+
+body.tts-on p:hover, 
+body.tts-on h1:hover, 
+body.tts-on h2:hover, 
+body.tts-on h3:hover, 
+body.tts-on h4:hover, 
+body.tts-on h5:hover, 
+body.tts-on h6:hover, 
+body.tts-on li:hover {
+  outline: 2px dashed rgba(139, 58, 43, 0.4);
+  background-color: rgba(139, 58, 43, 0.03);
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+/* ===== Hide Google Translate UI ===== */
+/* Completely hide the top widget and its frame */
+.goog-te-banner-frame.skiptranslate, 
+.goog-te-banner-frame,
+#goog-gt-tt,
+.goog-te-balloon-frame,
+.VIpgJd-ZVi9od-ORHb-OEVmcd,
+.skiptranslate.goog-te-gadget {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Override body margin/top caused by Google Translate */
+body {
+  top: 0px !important;
+  position: relative !important;
+  min-height: 100vh;
+}
+
+/* Remove hover highlight from translated text */
+.goog-text-highlight {
+  background-color: transparent !important;
+  background: none !important;
+  box-shadow: none !important;
+}

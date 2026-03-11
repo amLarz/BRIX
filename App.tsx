@@ -10,6 +10,11 @@ import AddProject from './components/AddProject';
 import About from './components/About';
 import NewsFeed from './components/NewsFeed';
 import { INFRASTRUCTURE_NEWS } from './data';
+import { AccessibilityProvider } from './components/AccessibilityContext';
+import AccessibilityOnboarding from './components/AccessibilityOnboarding';
+import TTSBar from './components/TTSBar';
+import VoicePicker from './components/VoicePicker';
+import AccessibilityToast from './components/AccessibilityToast';
 
 const App: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
@@ -324,33 +329,39 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F5F5] pb-12">
-      <Header
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        onHomeClick={handleNavigateHome}
-        onAddClick={handleAddProjectView}
-        onAboutClick={handleViewAbout}
-        onNewsClick={handleViewNews}
-        showSearch={view.type === 'home' || view.type === 'news'}
-        isAdmin={isAdmin}
-      />
-      <main className="container mx-auto px-4 mt-8 pb-20">
-        {renderView()}
-      </main>
+    <AccessibilityProvider>
+      <AccessibilityOnboarding />
+      <div className="min-h-screen bg-[#F5F5F5] pb-12">
+        <Header
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          onHomeClick={handleNavigateHome}
+          onAddClick={handleAddProjectView}
+          onAboutClick={handleViewAbout}
+          onNewsClick={handleViewNews}
+          showSearch={view.type === 'home' || view.type === 'news'}
+          isAdmin={isAdmin}
+        />
+        <main className="container mx-auto px-4 mt-8 pb-20">
+          {renderView()}
+        </main>
 
-      {/* Floating Admin Toggle */}
-      <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-white/90 backdrop-blur-md px-4 py-2.5 rounded-full shadow-2xl border border-gray-200">
-        <span className={`text-[10px] font-black uppercase tracking-widest ${!isAdmin ? 'text-[#8B3A2B]' : 'text-gray-400'}`}>Citizen</span>
-        <button
-          onClick={() => setIsAdmin(!isAdmin)}
-          className={`w-12 h-6 rounded-full transition-colors relative flex items-center ${isAdmin ? 'bg-[#8B3A2B]' : 'bg-gray-300'}`}
-        >
-          <div className={`w-4 h-4 rounded-full bg-white shadow-md transform transition-transform duration-300 ${isAdmin ? 'translate-x-7' : 'translate-x-1'}`} />
-        </button>
-        <span className={`text-[10px] font-black uppercase tracking-widest ${isAdmin ? 'text-[#8B3A2B]' : 'text-gray-400'}`}>Admin</span>
+        {/* Floating Admin Toggle */}
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-white/90 backdrop-blur-md px-4 py-2.5 rounded-full shadow-2xl border border-gray-200">
+          <span className={`text-[10px] font-black uppercase tracking-widest ${!isAdmin ? 'text-[#8B3A2B]' : 'text-gray-400'}`}>Citizen</span>
+          <button
+            onClick={() => setIsAdmin(!isAdmin)}
+            className={`w-12 h-6 rounded-full transition-colors relative flex items-center ${isAdmin ? 'bg-[#8B3A2B]' : 'bg-gray-300'}`}
+          >
+            <div className={`w-4 h-4 rounded-full bg-white shadow-md transform transition-transform duration-300 ${isAdmin ? 'translate-x-7' : 'translate-x-1'}`} />
+          </button>
+          <span className={`text-[10px] font-black uppercase tracking-widest ${isAdmin ? 'text-[#8B3A2B]' : 'text-gray-400'}`}>Admin</span>
+        </div>
       </div>
-    </div>
+      <TTSBar />
+      <VoicePicker />
+      <AccessibilityToast />
+    </AccessibilityProvider>
   );
 };
 

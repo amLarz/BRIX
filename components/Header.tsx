@@ -1,5 +1,6 @@
 
 import React from 'react';
+import AccessibilityToolbar from './AccessibilityToolbar';
 
 interface HeaderProps {
   searchQuery: string;
@@ -23,10 +24,10 @@ const Header: React.FC<HeaderProps> = ({
   isAdmin
 }) => {
   return (
-    <header className="relative w-full">
+    <header className="relative w-full z-[250]">
       {/* Top Banner */}
-      <div className="bg-[#8B3A2B] text-white p-5 lg:p-8 flex flex-col lg:flex-row justify-between items-start lg:items-center relative overflow-hidden shadow-2xl">
-        <div className="z-10 group cursor-pointer select-none" onClick={onHomeClick}>
+      <div className="bg-[#8B3A2B] z-30 text-white p-5 lg:p-8 flex flex-col lg:flex-row justify-between items-start lg:items-center relative shadow-2xl">
+        <div className="z-10 group cursor-pointer select-none no-tts" onClick={onHomeClick}>
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-3">
               <div className="bg-white text-[#8B3A2B] px-4 py-1 rounded-sm font-black text-4xl lg:text-6xl tracking-tighter transform -skew-x-12 shadow-lg group-hover:scale-105 transition-transform">
@@ -67,6 +68,8 @@ const Header: React.FC<HeaderProps> = ({
                About Platform
              </span>
            </button>
+           {/* Accessibility Toolbar */}
+           <AccessibilityToolbar />
            <div className="h-10 w-20 construction-stripes opacity-10 hidden md:block" />
         </div>
 

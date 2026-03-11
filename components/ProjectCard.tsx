@@ -13,7 +13,7 @@ interface ProjectCardProps {
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, onVote, currentUserVote, isAdmin }) => {
   return (
     <div className="bg-white rounded-3xl shadow-[0_10px_30px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col group border border-gray-100 hover:border-[#8B3A2B]/20 transition-all duration-300">
-      <div className="relative h-56 overflow-hidden cursor-pointer" onClick={onClick}>
+      <div className="relative h-56 overflow-hidden cursor-pointer no-tts" onClick={onClick}>
         <img
           src={project.imageUrl}
           alt={project.name}
