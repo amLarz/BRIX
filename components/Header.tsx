@@ -9,6 +9,7 @@ interface HeaderProps {
   onAddClick: () => void;
   onAboutClick: () => void;
   onNewsClick: () => void;
+  onForumClick: () => void;
   showSearch?: boolean;
   isAdmin: boolean;
 }
@@ -20,6 +21,7 @@ const Header: React.FC<HeaderProps> = ({
   onAddClick,
   onAboutClick,
   onNewsClick,
+  onForumClick,
   showSearch = true,
   isAdmin
 }) => {
@@ -68,6 +70,18 @@ const Header: React.FC<HeaderProps> = ({
              <span className="relative z-10 flex items-center gap-2">
                <span className="w-2 h-2 rounded-full bg-[#8B3A2B] group-hover/btn:bg-white animate-pulse" />
                About Platform
+             </span>
+           </button>
+           <button 
+             id="nav-forum"
+             onClick={onForumClick}
+             className="relative overflow-hidden px-6 py-2.5 rounded-full bg-black/20 hover:bg-white hover:text-[#8B3A2B] border border-white/30 text-[10px] font-black uppercase tracking-widest transition-all shadow-xl backdrop-blur-sm group/btn flex items-center gap-2"
+           >
+             <span className="relative z-10 flex items-center gap-2">
+               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+               </svg>
+               Community Forum
              </span>
            </button>
            {/* Accessibility Toolbar */}

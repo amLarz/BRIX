@@ -9,7 +9,11 @@ import MaterialPriceList from './components/MaterialPriceList';
 import AddProject from './components/AddProject';
 import About from './components/About';
 import NewsFeed from './components/NewsFeed';
-import { INFRASTRUCTURE_NEWS } from './data';
+import Forum from './components/Forum';
+import CreatePost from './components/CreatePost';
+import ForumPostDetail from './components/ForumPostDetail';
+import { INFRASTRUCTURE_NEWS, INITIAL_FORUM_POSTS } from './data';
+import { ForumPost } from './types';
 import { AccessibilityProvider } from './components/AccessibilityContext';
 import AccessibilityOnboarding from './components/AccessibilityOnboarding';
 import TTSBar from './components/TTSBar';
@@ -30,6 +34,11 @@ const App: React.FC = () => {
     const saved = localStorage.getItem('brix_comment_votes');
     return saved ? JSON.parse(saved) : {};
   });
+  const [forumPosts, setForumPosts] = useState<ForumPost[]>(INITIAL_FORUM_POSTS);
+  const [forumVotes, setForumVotes] = useState<Record<string, 'up' | 'down' | null>>(() => {
+    const saved = localStorage.getItem('brix_forum_votes');
+    return saved ? JSON.parse(saved) : {};
+  });
 
   const currentUser = 'Guest User';
 
@@ -41,12 +50,19 @@ const App: React.FC = () => {
     localStorage.setItem('brix_comment_votes', JSON.stringify(commentVotes));
   }, [commentVotes]);
 
+  useEffect(() => {
+    localStorage.setItem('brix_forum_votes', JSON.stringify(forumVotes));
+  }, [forumVotes]);
+
   const handleNavigateHome = () => setView({ type: 'home' });
   const handleViewProject = (id: string) => setView({ type: 'project-detail', projectId: id });
   const handleViewPrices = (id: string) => setView({ type: 'material-prices', categoryId: id });
   const handleAddProjectView = () => setView({ type: 'add-project' });
   const handleViewAbout = () => setView({ type: 'about' });
   const handleViewNews = () => setView({ type: 'news' });
+  const handleViewForum = () => setView({ type: 'forum' });
+  const handleViewCreateForumPost = () => setView({ type: 'create-forum-post' });
+  const handleViewForumPost = (id: string) => setView({ type: 'forum-post-detail', postId: id });
 
   const handleMaterialClick = (materialName: string) => {
     const category = MATERIAL_CATEGORIES.find(cat =>
@@ -253,6 +269,60 @@ const App: React.FC = () => {
     setView({ type: 'home' });
   };
 
+  const handleVoteForum = (postId: string, type: 'up' | 'down') => {
+    const currentVote = forumVotes[postId];
+    setForumPosts(prev => prev.map(p => {
+      if (p.id !== postId) return p;
+      let newUpvotes = p.upvotes;
+      let newDownvotes = p.downvotes;
+      if (currentVote === type) {
+        if (type === 'up') newUpvotes--; else newDownvotes--;
+      } else if (currentVote) {
+        if (type === 'up') { newUpvotes++; newDownvotes--; }
+        else { newUpvotes--; newDownvotes++; }
+      } else {
+        if (type === 'up') newUpvotes++; else newDownvotes++;
+      }
+      return { ...p, upvotes: newUpvotes, downvotes: newDownvotes };
+    }));
+    setForumVotes(prev => ({ ...prev, [postId]: currentVote === type ? null : type }));
+  };
+
+  const handleCreateForumPost = (title: string, content: string, attachments: File[]) => {
+    const newPost: ForumPost = {
+      id: `fp-${Date.now()}`,
+      author: currentUser,
+      role: 'Community Member',
+      title,
+      content,
+      date: new Date().toISOString().split('T')[0],
+      upvotes: 0,
+      downvotes: 0,
+      comments: [],
+      attachments: attachments.map(f => ({ name: f.name, url: URL.createObjectURL(f), type: f.type.includes('image') ? 'image' : 'file' }))
+    };
+    setForumPosts(prev => [newPost, ...prev]);
+    setView({ type: 'forum' });
+  };
+
+  const handleAddForumComment = (postId: string, text: string) => {
+    setForumPosts(prev => prev.map(p => {
+      if (p.id !== postId) return p;
+      const newComment = {
+        id: Math.random().toString(36).slice(2, 9),
+        author: currentUser,
+        role: 'Community Member',
+        text,
+        avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88a9.947 9.947 0 0 1 12.28 0C16.43 19.18 14.03 20 12 20z"/></svg>',
+        date: new Date().toISOString().split('T')[0],
+        upvotes: 0,
+        downvotes: 0,
+        replies: []
+      };
+      return { ...p, comments: [newComment, ...p.comments] };
+    }));
+  };
+
   const sortedAndFilteredProjects = useMemo(() => {
     let result = [...projects];
 
@@ -323,6 +393,30 @@ const App: React.FC = () => {
         return <About onBack={handleNavigateHome} />;
       case 'news':
         return <NewsFeed articles={INFRASTRUCTURE_NEWS} />;
+      case 'forum':
+        return (
+          <Forum 
+            posts={forumPosts} 
+            onPostClick={handleViewForumPost} 
+            onCreatePostClick={handleViewCreateForumPost}
+            onVote={handleVoteForum}
+            userVotes={forumVotes}
+          />
+        );
+      case 'create-forum-post':
+        return <CreatePost onBack={handleViewForum} onSubmit={handleCreateForumPost} />;
+      case 'forum-post-detail':
+        const post = forumPosts.find(p => p.id === view.postId);
+        if (!post) return <div>Post not found</div>;
+        return (
+          <ForumPostDetail 
+            post={post} 
+            onBack={handleViewForum} 
+            onVote={(type) => handleVoteForum(post.id, type)}
+            currentUserVote={forumVotes[post.id] || null}
+            onAddComment={(text) => handleAddForumComment(post.id, text)}
+          />
+        );
       default:
         return <div>404 - Not Found</div>;
     }
@@ -339,6 +433,7 @@ const App: React.FC = () => {
           onAddClick={handleAddProjectView}
           onAboutClick={handleViewAbout}
           onNewsClick={handleViewNews}
+          onForumClick={handleViewForum}
           showSearch={view.type === 'home' || view.type === 'news'}
           isAdmin={isAdmin}
         />

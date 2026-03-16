@@ -4,17 +4,20 @@ import { useAccessibility, LANGS } from './AccessibilityContext';
 
 const AccessibilityOnboarding: React.FC = () => {
   const { hasOnboarded, finishOnboarding, speakRaw } = useAccessibility();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
   const [selectedLang, setSelectedLang] = useState('');
   const [ttsChoice, setTtsChoice] = useState(false);
 
-  useEffect(() => {
-    if (!hasOnboarded) {
-      setTimeout(() => speakRaw('Maligayang pagdating sa BRIX. Gusto mo bang marinig ang mga teksto?', 'fil-PH'), 700);
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   if (hasOnboarded) return null;
+
+  const handleStart = () => {
+    const welcomeEn = "Welcome to BRIX: Building Reporting and Infrastructure Exchange. Please click on a project with the photo to view details. Turn this voice on or off with the button on the top right.";
+    const welcomeFil = "Mabuhay, ito ay BRIX: Building Reporting and Infrastructure Exchange. I-click ang isang proyekto na may imahe para makita ang detalye. Maaari mong i-on o i-off ang boses gamit ang button sa kanang itaas.";
+    
+    // Play both languages
+    speakRaw(`${welcomeFil} ${welcomeEn}`, 'fil-PH');
+    setStep(1);
+  };
 
   const handleTTS = (val: boolean) => {
     setTtsChoice(val);
@@ -48,12 +51,29 @@ const AccessibilityOnboarding: React.FC = () => {
       <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#8B3A2B]/50 mb-8">Building Reports & Infrastructure Exchange</p>
 
       {/* Card */}
-      <div className="border border-gray-200 rounded-2xl p-8 max-w-md w-full shadow-xl bg-white text-center" style={{ animation: step === 2 ? 'fadeUp 0.35s ease' : undefined }}>
+      <div className="border border-gray-200 rounded-2xl p-8 max-w-md w-full shadow-xl bg-white text-center" style={{ animation: step !== 0 ? 'fadeUp 0.35s ease' : undefined }}>
+        {step === 0 && (
+          <div style={{ animation: 'fadeUp 0.35s ease' }}>
+            <span className="text-5xl mb-4 block">👋</span>
+            <h2 className="text-xl font-black text-[#1A1A1A] mb-1">Mabuhay! Welcome!</h2>
+            <p className="text-sm text-gray-500 mb-8">
+              Click start to begin the brix experience.<br/>
+              I-click ang simula para mag-umpisa.
+            </p>
+            <button
+              onClick={handleStart}
+              className="w-full bg-[#8B3A2B] text-white py-4 rounded-xl font-black text-lg hover:bg-[#A54A39] transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
+            >
+              Magsimula / Start →
+            </button>
+          </div>
+        )}
+
         {step === 1 && (
           <div style={{ animation: 'fadeUp 0.35s ease' }}>
             <span className="text-5xl mb-4 block">🔊</span>
-            <h2 className="text-xl font-black text-[#1A1A1A] mb-1">Gusto mo bang marinig ang mga teksto?</h2>
-            <p className="text-sm text-gray-500 mb-6">Do you want the text to be read aloud?</p>
+            <h2 className="text-xl font-black text-[#1A1A1A] mb-1">Gusto mo bang i-on ang boses at panatilihin itong bukas?</h2>
+            <p className="text-sm text-gray-500 mb-6">Do you want to turn on the voice and keep it open?</p>
             <div className="flex gap-3 justify-center flex-wrap">
               <button
                 onClick={() => handleTTS(true)}

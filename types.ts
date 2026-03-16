@@ -30,13 +30,18 @@ export interface Project {
   status: ProjectStatus;
   budget: string; // Formatting like "PhP 96.49 Million"
   deadline: string; // Mandatory deadline/expected completion
+  startDate?: string;
+  percentage?: number;
+  updates?: { date: string; text: string }[];
   verificationDoc?: string; // URL or name of uploaded verification doc
   finishDate?: string;
   imageUrl: string;
   materials: MaterialItem[];
+  bidders?: { name: string; amount: string; status: string; }[];
   comments: ProjectComment[];
   upvotes: number;
   downvotes: number;
+  managingOrganization?: string;
   createdAt: string; // ISO date string for sorting
 }
 
@@ -61,7 +66,24 @@ export type ViewState =
   | { type: 'material-prices'; categoryId: string }
   | { type: 'add-project' }
   | { type: 'about' }
-  | { type: 'news' };
+  | { type: 'news' }
+  | { type: 'forum' }
+  | { type: 'create-forum-post' }
+  | { type: 'forum-post-detail', postId: string };
+
+export interface ForumPost {
+  id: string;
+  author: string;
+  role: string;
+  title: string;
+  content: string;
+  date: string;
+  upvotes: number;
+  downvotes: number;
+  comments: ProjectComment[]; // Reusing ProjectComment for simplicity
+  attachments: { name: string; url: string; type: 'image' | 'file' }[];
+}
+
 
 export interface NewsArticle {
   id: string;

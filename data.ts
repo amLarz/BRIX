@@ -1,5 +1,5 @@
 
-import { Project, MaterialCategory, NewsArticle } from './types';
+import { Project, MaterialCategory, NewsArticle, ForumPost } from './types';
 
 export const INITIAL_PROJECTS: Project[] = [
   {
@@ -10,10 +10,23 @@ export const INITIAL_PROJECTS: Project[] = [
     status: 'Developing Project',
     budget: 'PhP 150,000,000.00',
     deadline: '2026-12-30',
+    startDate: '2024-02-01',
+    percentage: 65,
+    updates: [
+      { date: "Mar 10, 2026", text: "Steel framework on sections 4-6 completed ahead of schedule." },
+      { date: "Feb 28, 2026", text: "Concrete pouring delayed due to weather." },
+      { date: "Feb 14, 2026", text: "Foundation inspection passed. Phase 1 officially closed." },
+    ],
     createdAt: '2024-01-15T08:00:00Z',
     imageUrl: '/images/leyte_tide_protection_wall.png', // AI-generated: Leyte Tide Protection Wall
     upvotes: 342,
     downvotes: 89,
+    managingOrganization: 'DPWH Regional Office VIII',
+    bidders: [
+      { name: 'Apex Builders Inc.', amount: 'PhP 148,500,000.00', status: 'Awarded' },
+      { name: 'Leyte Construct Corp.', amount: 'PhP 149,200,000.00', status: 'Participated' },
+      { name: 'Global Tech Works', amount: 'PhP 151,000,000.00', status: 'Participated' }
+    ],
     materials: [
       { material: 'Portland Cement, 40kg', unit: 'Bag', price: 'PhP 259.00' },
       { material: 'Deformed Bar 12mm', unit: 'pc', price: 'PhP 310.00' },
@@ -82,6 +95,11 @@ export const INITIAL_PROJECTS: Project[] = [
     imageUrl: '/images/quezon_avenue_flyover.png', // AI-generated: Quezon Avenue Flyover Rehabilitation
     upvotes: 890,
     downvotes: 45,
+    managingOrganization: 'DPWH National Capital Region',
+    bidders: [
+      { name: 'Metro Build Masters', amount: 'PhP 84,000,000.00', status: 'Awarded' },
+      { name: 'City Infra Solutions', amount: 'PhP 85,200,000.00', status: 'Participated' }
+    ],
     materials: [
       { material: 'Asphalt Premix', unit: 'Metric Ton', price: 'PhP 6,200.00' },
       { material: 'Paint Latex Gloss', unit: 'gal', price: 'PhP 640.20' },
@@ -138,6 +156,11 @@ export const INITIAL_PROJECTS: Project[] = [
     imageUrl: '/images/sabu_cordova_expressway.png', // AI-generated: Sabu Cordova Link Expressway (Cebu-Cordova)
     upvotes: 1250,
     downvotes: 12,
+    managingOrganization: 'Cebu Cordova Link Expressway Corporation (CCLEC)',
+    bidders: [
+      { name: 'Cebu Link Joint Venture', amount: 'PhP 29,500,000,000.00', status: 'Awarded' },
+      { name: 'Pacific Span Builders', amount: 'PhP 30,100,000,000.00', status: 'Participated' }
+    ],
     materials: [
       { material: 'High-Tensile Steel Cable', unit: 'Linear Meter', price: 'PhP 8,400.00' },
       { material: 'Ready-Mix Concrete (High Strength)', unit: 'Cubic Meter', price: 'PhP 4,800.00' },
@@ -188,10 +211,21 @@ export const INITIAL_PROJECTS: Project[] = [
     status: 'Developing Project',
     budget: 'PhP 350,000,000,000.00',
     deadline: '2028-12-30',
+    startDate: '2025-01-10',
+    percentage: 30,
+    updates: [
+      { date: "Mar 05, 2026", text: "First phase tunnel boring machine arrived safely." },
+      { date: "Feb 20, 2026", text: "Land acquisition for northern terminal completed." }
+    ],
     createdAt: '2025-02-20T14:45:00Z',
     imageUrl: '/images/metro_manila_subway_phase1.png', // AI-generated: Metro Manila Subway Phase 1
     upvotes: 567,
     downvotes: 210,
+    managingOrganization: 'Department of Transportation (DOTr)',
+    bidders: [
+      { name: 'Manila Transit Consortium', amount: 'PhP 345,000,000,000.00', status: 'Awarded' },
+      { name: 'Asian Subways Inc.', amount: 'PhP 352,000,000,000.00', status: 'Participated' }
+    ],
     materials: [
       { material: 'Tunnel Segment Concrete', unit: 'Section', price: 'PhP 45,000.00' },
       { material: 'Rail Steel Grade R260', unit: 'Meter', price: 'PhP 2,800.00' },
@@ -242,10 +276,21 @@ export const INITIAL_PROJECTS: Project[] = [
     status: 'Developing Project',
     budget: 'PhP 4,800,000,000.00',
     deadline: '2025-11-20',
+    startDate: '2024-11-15',
+    percentage: 85,
+    updates: [
+      { date: "Mar 12, 2026", text: "Glass curtain walls installed on North terminal." },
+      { date: "Mar 01, 2026", text: "Commercial solar panel array installation completed." }
+    ],
     createdAt: '2025-03-05T11:20:00Z',
     imageUrl: '/images/bicol_airport_expansion.png', // AI-generated: Modern airport terminal
     upvotes: 215,
     downvotes: 15,
+    managingOrganization: 'Civil Aviation Authority of the Philippines (CAAP)',
+    bidders: [
+      { name: 'Bicol Aero Builders', amount: 'PhP 4,750,000,000.00', status: 'Awarded' },
+      { name: 'Skyway Constructors', amount: 'PhP 4,820,000,000.00', status: 'Participated' }
+    ],
     materials: [
       { material: 'Asphaltic Concrete', unit: 'Metric Ton', price: 'PhP 5,900.00' },
       { material: 'Glass Curtain Walls', unit: 'Sq Meter', price: 'PhP 3,400.00' },
@@ -417,3 +462,59 @@ export const INFRASTRUCTURE_NEWS: NewsArticle[] = [
     summary: 'Phase 1 of the Laguna Lakeshore Road Network, connecting Taguig to Calamba, is now 40% complete.'
   }
 ];
+
+export const INITIAL_FORUM_POSTS: ForumPost[] = [
+  {
+    id: 'fp-1',
+    author: 'CitizenWatcher',
+    role: 'Community Member',
+    title: 'Report: Hidden cracks on the new coastal road',
+    content: 'I was jogging at the section near the old pier and noticed some hairline cracks forming on the main pavement already. Should we be worried?',
+    date: '2026-03-12',
+    upvotes: 85,
+    downvotes: 2,
+    comments: [
+      {
+        id: 'fpc-1',
+        author: 'RoadSurveyor',
+        role: 'Community Member',
+        text: 'Hairline cracks are common due to thermal expansion, but if they widen, that is a sign of poor sub-base compaction.',
+        avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88a9.947 9.947 0 0 1 12.28 0C16.43 19.18 14.03 20 12 20z"/></svg>',
+        date: '2026-03-13',
+        upvotes: 12,
+        downvotes: 0,
+        replies: []
+      }
+    ],
+    attachments: [
+      { name: 'crack_detail.jpg', url: 'https://images.unsplash.com/photo-1590059392289-40b99a61f301?auto=format&fit=crop&q=80&w=800', type: 'image' }
+    ]
+  },
+  {
+    id: 'fp-2',
+    author: 'Luzon_Commuter',
+    role: 'Community Member',
+    title: 'Crowdsourcing data on the local drainage project',
+    content: 'Has anyone seen the official plans for the drainage project in Barangay San Jose? Water level seems to rise faster since they started.',
+    date: '2026-03-10',
+    upvotes: 45,
+    downvotes: 0,
+    comments: [],
+    attachments: []
+  },
+  {
+    id: 'fp-3',
+    author: 'AccountabilitySeeker',
+    role: 'Community Member',
+    title: 'Why is the bridge construction halted for 3 months?',
+    content: 'The bridge connecting Zone 4 and 5 has seen ZERO activity since January. Materials are left out in the rain to rust. This is our taxes at work!',
+    date: '2026-03-08',
+    upvotes: 156,
+    downvotes: 5,
+    comments: [],
+    attachments: [
+      { name: 'halted_site.jpg', url: 'https://images.unsplash.com/photo-1541888946425-d81bb19480c5?auto=format&fit=crop&q=80&w=800', type: 'image' }
+    ]
+  }
+];
+
