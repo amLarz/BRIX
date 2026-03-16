@@ -7,9 +7,13 @@ interface ForumPostDetailProps {
   onVote: (type: 'up' | 'down') => void;
   currentUserVote: 'up' | 'down' | null;
   onAddComment: (text: string) => void;
+  isAdmin?: boolean;
+  currentUser?: string;
+  onDeletePost?: () => void;
+  onDeleteComment?: (commentId: string) => void;
 }
 
-const ForumPostDetail: React.FC<ForumPostDetailProps> = ({ post, onBack, onVote, currentUserVote, onAddComment }) => {
+const ForumPostDetail: React.FC<ForumPostDetailProps> = ({ post, onBack, onVote, currentUserVote, onAddComment, isAdmin, currentUser, onDeletePost, onDeleteComment }) => {
   const [commentText, setCommentText] = React.useState('');
 
   const handleAddComment = () => {
@@ -35,8 +39,10 @@ const ForumPostDetail: React.FC<ForumPostDetailProps> = ({ post, onBack, onVote,
           {/* Side Voting Bar */}
           <div className="bg-gray-50/50 p-4 flex flex-col items-center gap-2 border-r border-gray-100">
             <button
-              onClick={() => onVote('up')}
-              className={`p-1.5 rounded-lg transition-colors ${currentUserVote === 'up' ? 'text-orange-600 bg-orange-100/50' : 'text-gray-400 hover:bg-gray-200'}`}
+              onClick={() => { if (!isAdmin) onVote('up'); }}
+              disabled={isAdmin}
+              title={isAdmin ? "Voting disabled for administrators" : ""}
+              className={`p-1.5 rounded-lg transition-colors ${currentUserVote === 'up' ? 'text-orange-600 bg-orange-100/50' : `text-gray-400 ${!isAdmin ? 'hover:bg-gray-200' : 'cursor-not-allowed opacity-50'}`}`}
             >
               <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 4l8 8h-6v8h-4v-8H4l8-8z" />
@@ -46,8 +52,10 @@ const ForumPostDetail: React.FC<ForumPostDetailProps> = ({ post, onBack, onVote,
               {post.upvotes - post.downvotes}
             </span>
             <button
-              onClick={() => onVote('down')}
-              className={`p-1.5 rounded-lg transition-colors ${currentUserVote === 'down' ? 'text-blue-600 bg-blue-100/50' : 'text-gray-400 hover:bg-gray-200'}`}
+              onClick={() => { if (!isAdmin) onVote('down'); }}
+              disabled={isAdmin}
+              title={isAdmin ? "Voting disabled for administrators" : ""}
+              className={`p-1.5 rounded-lg transition-colors ${currentUserVote === 'down' ? 'text-blue-600 bg-blue-100/50' : `text-gray-400 ${!isAdmin ? 'hover:bg-gray-200' : 'cursor-not-allowed opacity-50'}`}`}
             >
               <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 20l-8-8h6V4h4v8h6l-8 8z" />
@@ -66,7 +74,24 @@ const ForumPostDetail: React.FC<ForumPostDetailProps> = ({ post, onBack, onVote,
               </div>
             </div>
 
-            <h1 className="text-3xl font-black text-gray-900 mb-6 leading-tight">{post.title}</h1>
+            <div className="flex justify-between items-start mb-6">
+              <h1 className="text-3xl font-black text-gray-900 leading-tight">{post.title}</h1>
+              {!isAdmin && currentUser === post.author && onDeletePost && (
+                <button
+                  onClick={() => {
+                    if (window.confirm("Are you sure you want to delete this forum post? This cannot be undone.")) {
+                      onDeletePost();
+                    }
+                  }}
+                  className="flex items-center gap-1.5 text-xs text-red-500 hover:text-red-700 font-bold bg-red-50 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap ml-4 flex-shrink-0"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  Delete Post
+                </button>
+              )}
+            </div>
             
             <div className="prose prose-slate max-w-none text-gray-700 font-medium leading-relaxed mb-8">
               {post.content}
@@ -108,18 +133,28 @@ const ForumPostDetail: React.FC<ForumPostDetailProps> = ({ post, onBack, onVote,
               </h3>
               
               <div className="mb-8">
-                <textarea
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  placeholder="What is your take on this?"
-                  className="w-full bg-gray-50 border-2 border-gray-100 rounded-2xl px-6 py-4 focus:border-[#8B3A2B] focus:ring-0 transition-all font-medium text-gray-700 placeholder:text-gray-300 resize-none h-32 mb-4"
-                />
-                <button
-                  onClick={handleAddComment}
-                  className="bg-[#8B3A2B] text-white px-8 py-3 rounded-full font-black uppercase tracking-widest text-xs hover:scale-105 transition-transform"
-                >
-                  Comment
-                </button>
+                {isAdmin ? (
+                  <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center">
+                    <p className="text-gray-400 font-black text-sm uppercase italic tracking-tighter">
+                      Administrative Mode: Commenting disabled to maintain discussion neutrality
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    <textarea
+                      value={commentText}
+                      onChange={(e) => setCommentText(e.target.value)}
+                      placeholder="What is your take on this?"
+                      className="w-full bg-gray-50 border-2 border-gray-100 rounded-2xl px-6 py-4 focus:border-[#8B3A2B] focus:ring-0 transition-all font-medium text-gray-700 placeholder:text-gray-300 resize-none h-32 mb-4"
+                    />
+                    <button
+                      onClick={handleAddComment}
+                      className="bg-[#8B3A2B] text-white px-8 py-3 rounded-full font-black uppercase tracking-widest text-xs hover:scale-105 transition-transform"
+                    >
+                      Comment
+                    </button>
+                  </>
+                )}
               </div>
 
               <div className="space-y-6">
@@ -134,6 +169,25 @@ const ForumPostDetail: React.FC<ForumPostDetailProps> = ({ post, onBack, onVote,
                         <span className="text-[10px] text-gray-400 font-bold uppercase">{comment.date}</span>
                       </div>
                       <p className="text-gray-600 text-sm font-medium leading-relaxed">{comment.text}</p>
+                      
+                      {/* Comment Action Bar */}
+                      {!isAdmin && currentUser === comment.author && onDeleteComment && (
+                        <div className="flex justify-end mt-2">
+                           <button
+                             onClick={() => {
+                               if (window.confirm("Are you sure you want to delete this comment?")) {
+                                 onDeleteComment(comment.id);
+                               }
+                             }}
+                             className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-red-400 hover:text-red-600 transition-colors"
+                           >
+                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3">
+                               <path d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2M10 11v6M14 11v6" />
+                             </svg>
+                             Delete
+                           </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}

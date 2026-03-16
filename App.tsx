@@ -323,6 +323,21 @@ const App: React.FC = () => {
     }));
   };
 
+  const handleDeleteForumPost = (postId: string) => {
+    setForumPosts(prev => prev.filter(p => p.id !== postId));
+    setView({ type: 'forum' });
+  };
+
+  const handleDeleteForumComment = (postId: string, commentId: string) => {
+    setForumPosts(prev => prev.map(p => {
+      if (p.id !== postId) return p;
+      return {
+        ...p,
+        comments: p.comments.filter(c => c.id !== commentId)
+      };
+    }));
+  };
+
   const sortedAndFilteredProjects = useMemo(() => {
     let result = [...projects];
 
@@ -401,6 +416,9 @@ const App: React.FC = () => {
             onCreatePostClick={handleViewCreateForumPost}
             onVote={handleVoteForum}
             userVotes={forumVotes}
+            isAdmin={isAdmin}
+            currentUser={currentUser}
+            onDeletePost={handleDeleteForumPost}
           />
         );
       case 'create-forum-post':
@@ -415,6 +433,10 @@ const App: React.FC = () => {
             onVote={(type) => handleVoteForum(post.id, type)}
             currentUserVote={forumVotes[post.id] || null}
             onAddComment={(text) => handleAddForumComment(post.id, text)}
+            isAdmin={isAdmin}
+            currentUser={currentUser}
+            onDeletePost={() => handleDeleteForumPost(post.id)}
+            onDeleteComment={(commentId) => handleDeleteForumComment(post.id, commentId)}
           />
         );
       default:

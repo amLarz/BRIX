@@ -11,8 +11,8 @@ const AccessibilityOnboarding: React.FC = () => {
   if (hasOnboarded) return null;
 
   const handleStart = () => {
-    const welcomeEn = "Welcome to BRIX: Building Reporting and Infrastructure Exchange. Please click on a project with the photo to view details. Turn this voice on or off with the button on the top right.";
-    const welcomeFil = "Mabuhay, ito ay BRIX: Building Reporting and Infrastructure Exchange. I-click ang isang proyekto na may imahe para makita ang detalye. Maaari mong i-on o i-off ang boses gamit ang button sa kanang itaas.";
+    const welcomeEn = "Welcome to BRIX: Building Reporting and Infrastructure Exchange. Please click on a project with the photo to view details. Turn this voice on or off with the button on the top right. Do you want to turn on the voice and keep it open?";
+    const welcomeFil = "Mabuhay, ito ay BRIX: Building Reporting and Infrastructure Exchange. I-click ang isang proyekto na may imahe para makita ang detalye. Maaari mong i-on o i-off ang boses gamit ang button sa kanang itaas. Gusto mo bang i-on ang boses at panatilihin itong bukas?";
     
     // Play both languages
     speakRaw(`${welcomeFil} ${welcomeEn}`, 'fil-PH');
